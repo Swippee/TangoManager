@@ -1,8 +1,12 @@
+using TangoManagerAPI.Entities.Ports.Repository;
+using TangoManagerAPI.Infrastructures.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddScoped<IReadRepository, ReadRepository>();
+builder.Services.AddScoped<IWriteRepository, WriteRepository>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -18,7 +22,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+//app.UseAuthorization();
 
 app.MapControllers();
 
