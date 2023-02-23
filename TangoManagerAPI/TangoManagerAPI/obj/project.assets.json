@@ -998,7 +998,7 @@
       },
       "TangoManagerAPI.Entities/1.0.0": {
         "type": "project",
-        "framework": ".NETStandard,Version=v2.0",
+        "framework": ".NETCoreApp,Version=v7.0",
         "dependencies": {
           "Dapper": "2.0.123",
           "Microsoft.Data.SqlClient": "5.1.0",
@@ -1014,7 +1014,7 @@
       },
       "TangoManagerAPI.Infrastructures/1.0.0": {
         "type": "project",
-        "framework": ".NETStandard,Version=v2.0",
+        "framework": ".NETCoreApp,Version=v7.0",
         "dependencies": {
           "Microsoft.Data.SqlClient": "5.1.0",
           "TangoManagerAPI.Entities": "1.0.0"

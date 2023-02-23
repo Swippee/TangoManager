@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30011.22
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TangoManagerAPI", "TangoManagerAPI\TangoManagerAPI.csproj", "{FFC27AE3-538B-4858-B725-9808BB8C0961}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TangoManagerAPI.Entities", "TangoManagerAPI.Entities\TangoManagerAPI.Entities.csproj", "{4B0D1009-BE03-4E0C-947D-8F10B0B47B16}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TangoManagerAPI.Entities", "TangoManagerAPI.Entities\TangoManagerAPI.Entities.csproj", "{4B0D1009-BE03-4E0C-947D-8F10B0B47B16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TangoManagerAPI.Infrastructures", "TangoManagerAPI.Infrastructures\TangoManagerAPI.Infrastructures.csproj", "{B2CD703B-43FB-4308-8D21-EA3C627FC2E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TangoManagerAPI.Infrastructures", "TangoManagerAPI.Infrastructures\TangoManagerAPI.Infrastructures.csproj", "{B2CD703B-43FB-4308-8D21-EA3C627FC2E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary1", "ClassLibrary1\ClassLibrary1.csproj", "{5B558F66-BCC4-4BB3-BCA0-A9C403A48542}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{B2CD703B-43FB-4308-8D21-EA3C627FC2E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2CD703B-43FB-4308-8D21-EA3C627FC2E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2CD703B-43FB-4308-8D21-EA3C627FC2E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B558F66-BCC4-4BB3-BCA0-A9C403A48542}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B558F66-BCC4-4BB3-BCA0-A9C403A48542}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B558F66-BCC4-4BB3-BCA0-A9C403A48542}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B558F66-BCC4-4BB3-BCA0-A9C403A48542}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using TangoManagerAPI.Infrastructures.Routers;
+using TangoManagerAPI.Entities.Ports.Router;
 
 namespace TangoManagerAPI.Entities.Events
 {
