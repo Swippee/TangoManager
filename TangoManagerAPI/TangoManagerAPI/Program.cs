@@ -1,6 +1,6 @@
-using TangoManagerAPI.Entities.Commands.CommandsPaquet;
-using TangoManagerAPI.Entities.Ports.Repository;
-using TangoManagerAPI.Entities.Ports.Router;
+using TangoManagerAPI.Entities.Commands;
+using TangoManagerAPI.Entities.Ports.Repositories;
+using TangoManagerAPI.Entities.Ports.Routers;
 using TangoManagerAPI.Entities.Queries;
 using TangoManagerAPI.Infrastructures.Handlers;
 using TangoManagerAPI.Infrastructures.Repositories;
@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddSingleton<IPaquetRepository,PaquetRepository>();
+
 builder.Services.AddSingleton<QueryHandler>();
 builder.Services.AddSingleton<CommandHandler>();
 
@@ -23,28 +24,22 @@ builder.Services.AddSingleton<IQueryRouter>(p => {
 
     var handler = p.GetRequiredService<QueryHandler>();
 
-    queryRouter.AddQueryHandler<GetPaquetsQuery>(handler);
-    queryRouter.AddQueryHandler<GetPaquetByNameQuery>(handler);
-    queryRouter.AddQueryHandler<DeletePaquetByNameQuery>(handler);
+    queryRouter.AddQueryHandler<GetAllPaquetsQuery>(handler);   
+
     return queryRouter;
 });
-builder.Services.AddSingleton<ICommandRouter>(p =>
-{
-    var router = p.GetRequiredService<CommandRouter>();
+
+builder.Services.AddSingleton<ICommandRouter>(p => {
+    var commandRouter = p.GetRequiredService<CommandRouter>();
 
     var handler = p.GetRequiredService<CommandHandler>();
 
-    router.AddCommandHandler<CreatePaquetAsyncCommand>(handler);
-    router.AddCommandHandler<UpdatePaquetAsyncCommand>(handler);
+    commandRouter.AddCommandHandler<CreateNewPaquetCommand>(handler);
 
-    return router;
+    return commandRouter;
 });
 
-builder.Services.AddCors(opt => opt.AddPolicy("CorsPolicy",
-    policy =>
-    {
-        policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200");
-    }));
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

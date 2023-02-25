@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TangoManagerAPI.Entities.Ports.Handler;
-using TangoManagerAPI.Entities.Ports.Router;
+using TangoManagerAPI.Entities.Ports.Routers;
 using TangoManagerAPI.Entities.Queries;
 
 namespace TangoManagerAPI.Infrastructures.Routers
 {
-    public class QueryRouter : IQueryRouter
+    public sealed class QueryRouter : IQueryRouter
     {
         private readonly IDictionary<Type, IQueryHandler> _queryHandlers;
 

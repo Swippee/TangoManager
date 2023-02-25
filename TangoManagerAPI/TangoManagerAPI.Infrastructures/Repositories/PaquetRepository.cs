@@ -8,8 +8,8 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TangoManagerAPI.Entities.Ports.Repository;
-using TangoManagerAPI.Models;
+using TangoManagerAPI.Entities.Models;
+using TangoManagerAPI.Entities.Ports.Repositories;
 
 namespace TangoManagerAPI.Infrastructures.Repositories
 {

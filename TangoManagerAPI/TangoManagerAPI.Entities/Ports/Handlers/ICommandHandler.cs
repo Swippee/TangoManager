@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using TangoManagerAPI.Entities.Commands;
 
-namespace TangoManagerAPI.Entities.Ports.Handler
+namespace TangoManagerAPI.Entities.Ports.Handlers
 {
     public interface ICommandHandler<TResult, in TCommand> : ICommandHandler where TCommand : ACommand
     {

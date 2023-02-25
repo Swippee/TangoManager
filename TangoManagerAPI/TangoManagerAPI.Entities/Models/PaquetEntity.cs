@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TangoManagerAPI.Models
+namespace TangoManagerAPI.Entities.Models
 {
     public class PaquetEntity
     {
@@ -15,8 +15,9 @@ namespace TangoManagerAPI.Models
         public string DateCreation { get; set; }
         public string? DateDernierQuiz { get; set; }
 
-      //  public ICollection<CarteEntity> Cartes { get; set; } = new List<CarteEntity>();
+        public ICollection<CarteEntity> Cartes { get; set; } = new List<CarteEntity>();
 
         #endregion
     }
+
 }

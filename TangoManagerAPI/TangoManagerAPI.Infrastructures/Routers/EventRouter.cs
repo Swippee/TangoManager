@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TangoManagerAPI.Entities.Events;
 using TangoManagerAPI.Entities.Ports.Handler;
-using TangoManagerAPI.Entities.Ports.Router;
+using TangoManagerAPI.Entities.Ports.Routers;
 
 namespace TangoManagerAPI.Infrastructures.Routers
 {

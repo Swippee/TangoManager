@@ -9,7 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TangoManagerAPI.Entities", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TangoManagerAPI.Infrastructures", "TangoManagerAPI.Infrastructures\TangoManagerAPI.Infrastructures.csproj", "{B2CD703B-43FB-4308-8D21-EA3C627FC2E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary1", "ClassLibrary1\ClassLibrary1.csproj", "{5B558F66-BCC4-4BB3-BCA0-A9C403A48542}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClassLibrary1", "ClassLibrary1\ClassLibrary1.csproj", "{5B558F66-BCC4-4BB3-BCA0-A9C403A48542}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E38D72CF-5A58-417E-ADAC-E26AD02F28DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TangoManagerAPI.Entities.Tests", "TangoManagerAPI.Entities.Tests\TangoManagerAPI.Entities.Tests.csproj", "{EADCACE9-09AD-4C29-8DCC-B560A55CD825}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,9 +37,16 @@ Global
 		{5B558F66-BCC4-4BB3-BCA0-A9C403A48542}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B558F66-BCC4-4BB3-BCA0-A9C403A48542}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B558F66-BCC4-4BB3-BCA0-A9C403A48542}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EADCACE9-09AD-4C29-8DCC-B560A55CD825}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EADCACE9-09AD-4C29-8DCC-B560A55CD825}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EADCACE9-09AD-4C29-8DCC-B560A55CD825}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EADCACE9-09AD-4C29-8DCC-B560A55CD825}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EADCACE9-09AD-4C29-8DCC-B560A55CD825} = {E38D72CF-5A58-417E-ADAC-E26AD02F28DE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F9A5B47F-3234-4444-94EE-CDCEF6EE6E8B}
