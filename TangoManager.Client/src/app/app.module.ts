@@ -1,18 +1,20 @@
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
-import { CoffeListComponent } from './coffe-list/coffe-list.component';
+import { PaquetListComponent } from './paquet-list/paquet-list.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CoffeListComponent
+    PaquetListComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    HttpClientModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule { }

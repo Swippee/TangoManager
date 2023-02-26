@@ -62,7 +62,6 @@ C:\Users\nicol\source\repos\TangoManager\TangoManager\TangoManagerAPI\TangoManag
 C:\Users\nicol\source\repos\TangoManager\TangoManager\TangoManagerAPI\TangoManagerAPI\obj\Debug\net7.0\TangoManagerAPI.AssemblyInfoInputs.cache
 C:\Users\nicol\source\repos\TangoManager\TangoManager\TangoManagerAPI\TangoManagerAPI\obj\Debug\net7.0\TangoManagerAPI.AssemblyInfo.cs
 C:\Users\nicol\source\repos\TangoManager\TangoManager\TangoManagerAPI\TangoManagerAPI\obj\Debug\net7.0\TangoManagerAPI.csproj.CoreCompileInputs.cache
-C:\Users\nicol\source\repos\TangoManager\TangoManager\TangoManagerAPI\TangoManagerAPI\obj\Debug\net7.0\TangoManagerAPI.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\nicol\source\repos\TangoManager\TangoManager\TangoManagerAPI\TangoManagerAPI\obj\Debug\net7.0\TangoManagerAPI.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\nicol\source\repos\TangoManager\TangoManager\TangoManagerAPI\TangoManagerAPI\obj\Debug\net7.0\staticwebassets\msbuild.TangoManagerAPI.Microsoft.AspNetCore.StaticWebAssets.props
 C:\Users\nicol\source\repos\TangoManager\TangoManager\TangoManagerAPI\TangoManagerAPI\obj\Debug\net7.0\staticwebassets\msbuild.build.TangoManagerAPI.props
@@ -78,3 +77,4 @@ C:\Users\nicol\source\repos\TangoManager\TangoManager\TangoManagerAPI\TangoManag
 C:\Users\nicol\source\repos\TangoManager\TangoManager\TangoManagerAPI\TangoManagerAPI\obj\Debug\net7.0\TangoManagerAPI.pdb
 C:\Users\nicol\source\repos\TangoManager\TangoManager\TangoManagerAPI\TangoManagerAPI\obj\Debug\net7.0\TangoManagerAPI.genruntimeconfig.cache
 C:\Users\nicol\source\repos\TangoManager\TangoManager\TangoManagerAPI\TangoManagerAPI\obj\Debug\net7.0\ref\TangoManagerAPI.dll
+C:\Users\nicol\source\repos\TangoManager\TangoManager\TangoManagerAPI\TangoManagerAPI\obj\Debug\net7.0\TangoManagerAPI.MvcApplicationPartsAssemblyInfo.cs

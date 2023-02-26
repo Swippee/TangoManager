@@ -27,5 +27,12 @@ namespace TangoManagerAPI.Infrastructures.Routers
         {
             _queryHandlers.Add(handler.GetSupportedQueryType<TQuery>(), handler);
         }
+
+        public async Task RouteAsync<TQuery>(AQuery<TQuery> query) where TQuery : AQuery<TQuery>
+        {
+            if (_queryHandlers.TryGetValue(query.QueryType, out var queryHandler))
+                 await ((IQueryHandler<TQuery>)queryHandler).HandleAsync((TQuery)query);
+            else throw new KeyNotFoundException();
+        }
     }
 }

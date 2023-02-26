@@ -12,8 +12,8 @@ CREATE TABLE [dbo].[Paquet](
 	[Nom] [nvarchar](20) NOT NULL,
 	[Description] [nvarchar](max) NULL,
 	[Score] [int] NULL,
-	[DateCreation] [datetime] NULL,
-	[DateDernierQuiz] [datetime] NOT NULL,
+	[DateCreation] [datetime] NOT NULL,
+	[DateDernierQuiz] [datetime] NULL,
  CONSTRAINT [PK__Paquet] PRIMARY KEY CLUSTERED 
 (
 	[Nom] ASC

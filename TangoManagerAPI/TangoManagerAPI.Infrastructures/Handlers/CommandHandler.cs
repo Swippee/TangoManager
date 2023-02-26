@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TangoManagerAPI.Entities.Commands;
+﻿using System.Threading.Tasks;
+using TangoManagerAPI.Entities.Commands.CommandsPaquet;
 using TangoManagerAPI.Entities.Exceptions;
 using TangoManagerAPI.Entities.Ports.Handler;
 using TangoManagerAPI.Entities.Ports.Repository;
-using TangoManagerAPI.Entities.Ports.Router;
 using TangoManagerAPI.Models;
 
 namespace TangoManagerAPI.Infrastructures.Handlers
 {
     public class CommandHandler :
-        ICommandHandler<PaquetEntity, CreateNewPaquetAsyncCommand>
+        ICommandHandler<PaquetEntity, CreatePaquetAsyncCommand>,
+        ICommandHandler<PaquetEntity, UpdatePaquetAsyncCommand>
     {
         private readonly IPaquetRepository _paquetRepository;
         
@@ -26,9 +22,9 @@ namespace TangoManagerAPI.Infrastructures.Handlers
             
         }
 
-        public async Task<PaquetEntity> HandleAsync(CreateNewPaquetAsyncCommand command)
+        public async Task<PaquetEntity> HandleAsync(CreatePaquetAsyncCommand command)
         {
-           var paquetEntity = await _paquetRepository.GetPaquetByName(command.Name);
+           var paquetEntity = await _paquetRepository.GetPaquetByNameAsync(command.Name);
 
             if (paquetEntity != null) {
                 throw new EntityAlreadyExistsException($"Move entity with name {paquetEntity.Nom} already exists, cannot add move with duplicate name.");
@@ -42,6 +38,26 @@ namespace TangoManagerAPI.Infrastructures.Handlers
             };
 
              await _paquetRepository.AddPaquetAsync(paquetEntity);
+            return paquetEntity;
+        }
+
+        public async Task<PaquetEntity> HandleAsync(UpdatePaquetAsyncCommand command)
+        {
+            var paquetEntity = await _paquetRepository.GetPaquetByNameAsync(command.Name);
+
+            if (paquetEntity == null)
+            {
+                throw new EntityDoNotExistException($"Move entity with name {paquetEntity.Nom} doesn exists, cannot add move with duplicate name.");
+            }
+
+            paquetEntity = new PaquetEntity
+            {
+                Nom = command.Name,
+                Description = command.Description,
+
+            };
+
+            await _paquetRepository.UpdatePaquetAsync(paquetEntity);
             return paquetEntity;
         }
     }

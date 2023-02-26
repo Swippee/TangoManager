@@ -27,7 +27,6 @@ namespace TangoManagerAPI.Infrastructures.Repositories
         public async Task<IEnumerable<PaquetEntity>> GetPaquetsAsync()
         {
 
-
             using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
             {
                 await connection.OpenAsync();
@@ -42,14 +41,14 @@ namespace TangoManagerAPI.Infrastructures.Repositories
         /// </summary>
         /// <param name="name">nom du Paquet</param>
         /// <returns></returns>
-        public async Task<PaquetEntity> GetPaquetByName(string name)
+        public async Task<PaquetEntity> GetPaquetByNameAsync(string name)
         {
 
             using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
             {
                 await connection.OpenAsync();
                 var query = "select * from Paquet WHERE Nom=@Name";
-                var allTransaction = await connection.QuerySingleAsync<PaquetEntity>(query, new { Name = name });
+                var allTransaction = await connection.QueryFirstOrDefaultAsync<PaquetEntity>(query, new { Name = name });
                 return allTransaction;
             }
 
@@ -71,6 +70,22 @@ namespace TangoManagerAPI.Infrastructures.Repositories
 
         }
         /// <summary>
+        /// Méthode pour mettre à jours la description d'un paquet
+        /// </summary>
+        /// <param name="paquet"></param>
+        public async Task UpdatePaquetAsync(PaquetEntity paquet)
+        {
+
+            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
+            {
+                await connection.OpenAsync();
+                var query = "Update Paquet Set Description=@Description Where Nom=@Nom";
+                await connection.ExecuteAsync(query, paquet);
+            }
+
+        }
+
+        /// <summary>
         /// Méthode pour créer un paquet
         /// </summary>
         /// <param name="paquet"></param>
@@ -85,7 +100,21 @@ namespace TangoManagerAPI.Infrastructures.Repositories
             }
 
         }
+        /// <summary>
+        /// Méthode pour créer un paquet
+        /// </summary>
+        /// <param name="paquet"></param>
+        public  List<PaquetEntity> TestList()
+        {
 
+            using (SqlConnection connection = new(_config.GetConnectionString("DefaultConnection")))
+            {
+                var query = "select * from Paquet";
+                var allTransaction =  connection.Query<PaquetEntity>(query);
+                return allTransaction.ToList();
+            }
+
+        }
 
     }
 }

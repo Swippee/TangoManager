@@ -1,0 +1,20 @@
+<table class="table">
+    <thead class="table-head">
+        <tr>
+            <th scope="col">Nom du paquet</th>
+            <th scope="col">Description</th>
+            <th scope="col">Date du dernier Quiz</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody *ngFor="let record of records">
+        <tr>
+            <td>{{record.Nom}}</td>
+            <td class="vertical-middle record-name table-cell">{{record.Nom}}</td> 
+            <td class="vertical-middle record-name table-cell">{{record.Description}}</td>
+            <td class="vertical-middle record-name table-cell">{{record.DateDernierQuiz}}</td>
+            <td class="vertical-middle record-name table-cell"></td> 
+        </tr>
+    </tbody>
+</table>
+

@@ -9,5 +9,6 @@ namespace TangoManagerAPI.Entities.Ports.Router
     public interface IQueryRouter
     {
         public Task<TResult> RouteAsync<TResult, TQuery>(AQuery<TResult, TQuery> query) where TQuery : AQuery<TResult, TQuery>;
+        public Task RouteAsync<TQuery>(AQuery<TQuery> query) where TQuery : AQuery<TQuery>;
     }
 }

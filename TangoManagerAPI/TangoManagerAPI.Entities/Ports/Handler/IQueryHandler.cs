@@ -20,4 +20,12 @@ namespace TangoManagerAPI.Entities.Ports.Handler
         public Type GetSupportedQueryType<S>() where S : AQuery => typeof(S);
 
     }
+
+    public interface IQueryHandler<S> : IQueryHandler where S : AQuery
+    {
+        public Type SupportedQueryType => typeof(S);
+
+        Task HandleAsync(S query, CancellationToken token = default);
+    }
+
 }

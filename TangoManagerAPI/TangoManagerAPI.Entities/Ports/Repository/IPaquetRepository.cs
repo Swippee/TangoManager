@@ -12,6 +12,9 @@ namespace TangoManagerAPI.Entities.Ports.Repository
         Task RemovePaquetAsync(string name);
 
         Task<IEnumerable<PaquetEntity>> GetPaquetsAsync();
-        Task<PaquetEntity> GetPaquetByName(string name);
+        Task<PaquetEntity> GetPaquetByNameAsync(string name);
+        Task UpdatePaquetAsync(PaquetEntity paquet);
+
+        List<PaquetEntity> TestList();
     }
 }
