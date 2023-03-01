@@ -34,7 +34,7 @@ builder.Services.AddSingleton<ICommandRouter>(p => {
 
     var handler = p.GetRequiredService<CommandHandler>();
 
-    commandRouter.AddCommandHandler<CreateNewPaquetCommand>(handler);
+    commandRouter.AddCommandHandler<CreatePaquetCommand>(handler);
 
     return commandRouter;
 });

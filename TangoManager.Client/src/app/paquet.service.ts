@@ -11,7 +11,7 @@ readonly rootURL='https://localhost:7107';
 
 constructor(private http: HttpClient){}
  getRecords(){
-  return this.http.get(this.rootURL + '/Paquet');
+  return this.http.get(this.rootURL + '/Paquets');
   }
  getRecordsB(): Observable<PaquetRecord[]>{
   return this.http.get<PaquetRecord[]>(this.rootURL + '/Paquet/Test');

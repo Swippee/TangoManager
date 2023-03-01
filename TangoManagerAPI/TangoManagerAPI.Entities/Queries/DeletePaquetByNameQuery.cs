@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using TangoManagerAPI.Entities.Ports.Router;
-using TangoManagerAPI.Models;
+using TangoManagerAPI.Entities.Ports.Routers;
 
 namespace TangoManagerAPI.Entities.Queries
 {
@@ -15,9 +14,10 @@ namespace TangoManagerAPI.Entities.Queries
             Name = name;
         }
 
-        public override async Task QueryAsync(IQueryRouter queryRouter)
+
+        public override Task QueryAsync(IQueryRouter queryRouter)
         {
-            await queryRouter.RouteAsync(this);
+            throw new NotImplementedException();
         }
     }
 }

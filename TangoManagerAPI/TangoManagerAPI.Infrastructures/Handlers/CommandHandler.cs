@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using TangoManagerAPI.Entities.Commands.CommandsPaquet;
 using TangoManagerAPI.Entities.Exceptions;
 using TangoManagerAPI.Entities.Models;
 using TangoManagerAPI.Entities.Ports.Handler;
@@ -9,7 +8,7 @@ using TangoManagerAPI.Entities.Ports.Repositories;
 namespace TangoManagerAPI.Infrastructures.Handlers
 {
     public class CommandHandler :
-        ICommandHandler<PaquetEntity, CreateNewPaquetCommand>
+        ICommandHandler<PaquetEntity, CreatePaquetCommand>
     {
         private readonly IPaquetRepository _paquetRepository;
         
@@ -22,7 +21,7 @@ namespace TangoManagerAPI.Infrastructures.Handlers
             
         }
 
-        public async Task<PaquetEntity> HandleAsync(CreateNewPaquetCommand command)
+        public async Task<PaquetEntity> HandleAsync(CreatePaquetCommand command)
         {
            var paquetEntity = await _paquetRepository.GetPaquetByNameAsync(command.Name);
 
@@ -39,5 +38,6 @@ namespace TangoManagerAPI.Infrastructures.Handlers
             await _paquetRepository.AddPaquetAsync(paquetEntity);
             return paquetEntity;
         }
+
     }
 }

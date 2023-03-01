@@ -116,5 +116,9 @@ namespace TangoManagerAPI.Infrastructures.Repositories
 
         }
 
+        public Task<PaquetEntity> GetPaquetByName(string name)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

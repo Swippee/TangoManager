@@ -15,7 +15,7 @@ namespace TangoManagerAPI.Entities.Tests
                 DateCreation = DateTime.UtcNow,
                 Id = 1,
                 DateDernierQuiz = null,
-                PaquetId = 1,
+                PaquetNom = "Famille",
                 Score = 10.0m,
                 Question = "The Three Musketeers"
             };
@@ -50,7 +50,7 @@ namespace TangoManagerAPI.Entities.Tests
                 DateCreation = DateTime.UtcNow,
                 Id = 1,
                 DateDernierQuiz = null,
-                PaquetId = 1,
+                PaquetNom = "Artiste",
                 Score = 10.0m,
                 Question = "The Three Musketeers"
             };
@@ -105,7 +105,7 @@ namespace TangoManagerAPI.Entities.Tests
                 DateCreation = DateTime.UtcNow,
                 Id = 1,
                 DateDernierQuiz = null,
-                PaquetId = 1,
+                PaquetNom = "Famille", 
                 Score = 10.0m,
                 Question = "The Three Musketeers"
             };
@@ -116,7 +116,7 @@ namespace TangoManagerAPI.Entities.Tests
                 DateCreation = DateTime.UtcNow,
                 Id = 2,
                 DateDernierQuiz = null,
-                PaquetId = 1,
+                PaquetNom = "Famille",
                 Score = 10.0m,
                 Question = "Crime and Punishment"
             };

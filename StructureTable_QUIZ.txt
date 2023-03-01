@@ -1,0 +1,9 @@
+TableQuizz
+
+Id - PacketName- CurrentCardId - CurrentState - DateCreation - DateModification - TotalScore
+
+Table QuizzCards
+
+IdQuiz - CardId - IsCorrect 
+QUIZ1   CARTE1    true		
+ 		

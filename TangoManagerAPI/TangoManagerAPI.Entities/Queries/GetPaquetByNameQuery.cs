@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using TangoManagerAPI.Entities.Ports.Router;
-using TangoManagerAPI.Models;
+using TangoManagerAPI.Entities.Models;
+using TangoManagerAPI.Entities.Ports.Routers;
 
 namespace TangoManagerAPI.Entities.Queries
 {
