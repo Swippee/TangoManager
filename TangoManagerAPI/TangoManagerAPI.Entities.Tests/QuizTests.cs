@@ -6,7 +6,7 @@ namespace TangoManagerAPI.Entities.Tests
     public class QuizTests
     {
         [Fact]
-        public void ShouldAnswer1CarteAndCheckState()
+        public void ShouldAnswer1CarteAndCheckProperties()
         {
             //Given
             var carteEntity = new CarteEntity
@@ -22,21 +22,27 @@ namespace TangoManagerAPI.Entities.Tests
 
             var paquet = new PaquetEntity
             {
-                Cartes = new List<CarteEntity> { carteEntity },
                 DateCreation = DateTime.UtcNow,
                 DateDernierQuiz = null,
-                Description = "Book Quiz",
+                Description = "Book QuizAggregate",
                 Nom = "Quiz1"
             };
 
-            var quiz = new Quiz(paquet);
+            var quiz = QuizEntity.Create(carteEntity.Id, paquet.Nom);
+
+            var quizAggregate = new QuizAggregate(quiz, paquet, new List<CarteEntity> {carteEntity});
 
             //When
-            quiz.Answer("alexandre dumas");
+            quizAggregate.Answer("alexandre dumas");
 
             //Then
-            Assert.True(quiz.CorrectlyAnsweredCartes.Contains(carteEntity));
-            Assert.True(quiz.QuizState is QuizFinishedState);
+            Assert.Contains(quizAggregate.CorrectlyAnsweredCards, x => x.Id == carteEntity.Id);
+            Assert.Contains(quizAggregate.AnsweredCards, x => x.Id == carteEntity.Id);
+            Assert.True(quizAggregate.QuizState is QuizFinishedState);
+            Assert.True(quiz.ModificationDate != null);
+            Assert.True(quiz.TotalScore == carteEntity.Score);
+            Assert.True(carteEntity.DateDernierQuiz != null);
+            Assert.True(paquet.DateDernierQuiz != null);
         }
 
 
@@ -57,20 +63,21 @@ namespace TangoManagerAPI.Entities.Tests
 
             var paquet = new PaquetEntity
             {
-                Cartes = new List<CarteEntity> { carteEntity },
                 DateCreation = DateTime.UtcNow,
                 DateDernierQuiz = null,
-                Description = "Book Quiz",
+                Description = "Book QuizAggregate",
                 Nom = "Quiz1"
             };
 
-            var quiz = new Quiz(paquet);
+            var quiz = QuizEntity.Create(carteEntity.Id, paquet.Nom);
+
+            var quizAggregate = new QuizAggregate(quiz, paquet, new List<CarteEntity> {carteEntity});
 
             //Then
             Assert.Throws<QuizAlreadyFinishedException>(() =>
             {
-                quiz.Answer("alexandre dumas");
-                quiz.Answer("alexandre dumas");
+                quizAggregate.Answer("alexandre dumas");
+                quizAggregate.Answer("alexandre dumas");
             });
         }
 
@@ -80,17 +87,17 @@ namespace TangoManagerAPI.Entities.Tests
             //Given
             var paquet = new PaquetEntity
             {
-                Cartes = new List<CarteEntity>(),
                 DateCreation = DateTime.UtcNow,
                 DateDernierQuiz = null,
-                Description = "Book Quiz",
+                Description = "Book QuizAggregate",
                 Nom = "Quiz1"
             };
 
             //Then
             Assert.Throws<EmptyPaquetException>(() =>
             {
-                var _ = new Quiz(paquet);
+                var quiz = QuizEntity.Create(1, paquet.Nom);
+                var _ = new QuizAggregate(quiz, paquet, Enumerable.Empty<CarteEntity>());
             });
         }
 
@@ -123,24 +130,22 @@ namespace TangoManagerAPI.Entities.Tests
 
             var paquet = new PaquetEntity
             {
-                Cartes = new List<CarteEntity> { carteEntity1, carteEntity2 },
                 DateCreation = DateTime.UtcNow,
                 DateDernierQuiz = null,
-                Description = "Book Quiz",
+                Description = "Book QuizAggregate",
                 Nom = "Quiz1"
             };
-
-            var quiz = new Quiz(paquet);
+            var quiz = QuizEntity.Create(carteEntity1.Id, paquet.Nom);
+            var quizAggregate = new QuizAggregate(quiz, paquet, new List<CarteEntity> {carteEntity1, carteEntity2});
 
             //When
-            quiz.Answer("alexandre dumas");
+            quizAggregate.Answer("alexandre dumas");
 
             //Then
-            Assert.True(quiz.CorrectlyAnsweredCartes.Contains(carteEntity1));
-            Assert.True(quiz.IncorrectlyAnsweredCartes.Count == 0);
-            Assert.True(quiz.AnsweredCartes.Count == 1);
-            Assert.True(quiz.CurrentCarte.Equals(carteEntity2));
-            Assert.True(quiz.QuizState is QuizActiveState);
+            Assert.True(quizAggregate.QuizCards.Count(x => !x.IsCorrect) == 0);
+            Assert.True(quizAggregate.QuizCards.Count(x => x.IsCorrect) == 1);
+            Assert.True(quizAggregate.CurrentCard.Equals(carteEntity2));
+            Assert.True(quizAggregate.QuizState is QuizActiveState);
         }
 
     }

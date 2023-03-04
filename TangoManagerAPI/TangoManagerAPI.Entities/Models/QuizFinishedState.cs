@@ -9,9 +9,16 @@ namespace TangoManagerAPI.Entities.Models
 {
     public  class QuizFinishedState : IQuizState
     {
+        public static string StateName => "Finished";
+
         public void Answer(string answer)
         {
-            throw new QuizAlreadyFinishedException("Quiz has already been finished!");
+            throw new QuizAlreadyFinishedException("QuizAggregate has already been finished!");
+        }
+
+        public override string ToString()
+        {
+            return StateName;
         }
     }
 }

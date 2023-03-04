@@ -1,40 +1,56 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TangoManagerAPI.Entities.Exceptions;
 
 namespace TangoManagerAPI.Entities.Models
 {
     public  class QuizActiveState : IQuizState
     {
-        private readonly Quiz _quiz;
+        public static string StateName => "Active";
 
-        public QuizActiveState(Quiz quiz)
+        private readonly QuizAggregate _quizAggregate;
+        private readonly QuizEntity _quizEntity;
+
+        public QuizActiveState(QuizAggregate quizAggregate)
         {
-            _quiz = quiz;
+            _quizAggregate = quizAggregate;
+            _quizEntity = quizAggregate.RootEntity;
         }
 
         public void Answer(string answer)
         {
-            var carteEntity = _quiz.Paquet.Cartes.First(x => x.Equals(_quiz.CurrentCarte));
+            var card = _quizAggregate.CurrentCard;
 
-            if (string.Equals(carteEntity.Reponse, answer, StringComparison.InvariantCultureIgnoreCase))
+            _quizAggregate.AnsweredCardsCollection.Add(card);
+            card.DateDernierQuiz = DateTime.UtcNow;
+
+            if (string.Equals(card.Reponse, answer, StringComparison.InvariantCultureIgnoreCase))
             {
-                _quiz.CorrectlyAnsweredCartes.Add(carteEntity);
+                _quizAggregate.CorrectlyAnsweredCardsCollection.Add(card);
+                _quizAggregate.QuizCardsCollection.Add(new QuizCardEntity(card.Id, _quizEntity.Id, true));
+                _quizEntity.TotalScore += card.Score;
+                _quizEntity.ModificationDate = DateTime.UtcNow;
             }
             else
             {
-                _quiz.IncorrectlyAnsweredCartes.Add(carteEntity);
+                _quizAggregate.IncorrectlyAnsweredCardsCollection.Add(card);
+                _quizAggregate.QuizCardsCollection.Add(new QuizCardEntity(card.Id, _quizEntity.Id, false));
             }
 
-            _quiz.AnsweredCartes.Add(carteEntity);
-            _quiz.CurrentCarte = _quiz.Paquet.Cartes.Except(_quiz.AnsweredCartes).FirstOrDefault() ?? _quiz.CurrentCarte;
-            _quiz.TotalScore += carteEntity.Score;
+            var notAnsweredCards = _quizAggregate.PacketCardsCollection.Except(_quizAggregate.AnsweredCardsCollection).ToList();
 
-            if (!_quiz.Paquet.Cartes.Except(_quiz.AnsweredCartes).Any())
-                _quiz.ChangeState(new QuizFinishedState());
+            if (!notAnsweredCards.Any())
+            {
+                _quizAggregate.ChangeState(new QuizFinishedState());
+            }
+            else
+            {
+                _quizAggregate.CurrentCard = notAnsweredCards.FirstOrDefault();
+            }
+        }
+
+        public override string ToString()
+        {
+            return StateName;
         }
     }
 }
