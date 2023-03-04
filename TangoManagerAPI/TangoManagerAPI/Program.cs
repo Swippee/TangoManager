@@ -14,6 +14,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddSingleton<IPaquetRepository,PaquetRepository>();
+builder.Services.AddSingleton<IQuizRepository>();
+builder.Services.AddSingleton<ICartesRepository>();
+
 
 builder.Services.AddSingleton<QueryHandler>();
 builder.Services.AddSingleton<CommandHandler>();
