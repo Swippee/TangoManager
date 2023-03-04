@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using TangoManagerAPI.Entities.Commands.CommandsPaquet;
 using TangoManagerAPI.Entities.Commands.CommandsQuiz;
+using TangoManagerAPI.Entities.Events.QuizAggregateEvents;
 using TangoManagerAPI.Entities.Exceptions;
 using TangoManagerAPI.Entities.Models;
 using TangoManagerAPI.Entities.Ports.Handlers;
@@ -74,7 +75,7 @@ namespace TangoManagerAPI.Infrastructures.Handlers
             var quiz = new QuizEntity(currentCard.Id, command.PacketName);
             var quizAggregate = new QuizAggregate(quiz, packet, packetCards);
 
-            await _quizRepository.SaveQuizAsync(quiz);
+            await new QuizCreatedEvent(quiz).DispatchAsync(_eventRouter);
 
             return quizAggregate;
         }

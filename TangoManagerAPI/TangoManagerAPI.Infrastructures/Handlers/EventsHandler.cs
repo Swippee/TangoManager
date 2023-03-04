@@ -9,7 +9,8 @@ namespace TangoManagerAPI.Infrastructures.Handlers
         IEventHandler<QuizAnsweredEvent>, 
         IEventHandler<QuizCardEntityAddedEvent>,
         IEventHandler<PacketUpdatedEvent>,
-        IEventHandler<CardUpdatedEvent>
+        IEventHandler<CardUpdatedEvent>,
+        IEventHandler<QuizCreatedEvent>
     {
         private readonly IQuizRepository _quizRepository;
         private readonly ICartesRepository _cartesRepository;
@@ -40,6 +41,11 @@ namespace TangoManagerAPI.Infrastructures.Handlers
         public async Task HandleAsync(CardUpdatedEvent @event)
         {
             await _cartesRepository.SaveCardAsync(@event.Data);
+        }
+
+        public async Task HandleAsync(QuizCreatedEvent @event)
+        {
+            await _quizRepository.SaveQuizAsync(@event.Data);
         }
     }
 }
