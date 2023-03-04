@@ -48,7 +48,7 @@ namespace TangoManagerAPI.Entities.Models
             PacketEntity = packet;
 
             if (!PacketCardsCollection.Any())
-                throw new EmptyPaquetException("Cannot create a QuizAggregate with an empty Packet!");
+                throw new EmptyPaquetException($"Cannot create a QuizAggregate with an empty Packet {packet.Nom}!");
 
             CurrentCard = PacketCardsCollection.FirstOrDefault(x => x.Id == quiz.CurrentCardId) ?? throw new CardNotFoundException($"Could not find Card with such Id {quiz.CurrentCardId} inside packet {packet.Nom}!");
 

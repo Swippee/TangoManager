@@ -68,6 +68,9 @@ namespace TangoManagerAPI.Infrastructures.Handlers
             var packet = await _paquetRepository.GetPaquetByNameAsync(command.PacketName);
             var packetCards = (await _cartesRepository.GetCartesByPaquetNameAsync(command.PacketName)).ToList();
 
+            if (!packetCards.Any())
+                throw new EmptyPaquetException($"Cannot create a Quiz with an empty Packet {packet.Nom}"!);
+
             var currentCard = packetCards
                 .Where(x => x.DateDernierQuiz != null)
                 .MinBy(x => x.DateDernierQuiz) ?? packetCards.First();
