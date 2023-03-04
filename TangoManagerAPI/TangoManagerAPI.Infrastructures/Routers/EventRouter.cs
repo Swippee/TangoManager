@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TangoManagerAPI.Entities.Events;
-using TangoManagerAPI.Entities.Ports.Handler;
+using TangoManagerAPI.Entities.Ports.Handlers;
 using TangoManagerAPI.Entities.Ports.Routers;
 
 namespace TangoManagerAPI.Infrastructures.Routers
@@ -29,17 +29,15 @@ namespace TangoManagerAPI.Infrastructures.Routers
             }
         }
 
-        public Task RouteAsync<TEvent>(TEvent @event) where TEvent : AEvent
+        public async Task RouteAsync<TEvent>(TEvent @event) where TEvent : AEvent
         {
             if (!_eventHandlers.TryGetValue(@event.GetType(), out var handlers)) 
-                return Task.CompletedTask;
-          
+                 return;
+
             foreach (var eventHandler in handlers)
             {
-                ((IEventHandler<TEvent>)eventHandler).Handle(@event);
+                await ((IEventHandler<TEvent>)eventHandler).HandleAsync(@event);
             }
-
-            return Task.CompletedTask;
         }
     }
 }

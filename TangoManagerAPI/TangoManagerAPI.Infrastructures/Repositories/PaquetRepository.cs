@@ -120,5 +120,10 @@ namespace TangoManagerAPI.Infrastructures.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public Task SavePacketAsync(PaquetEntity packetEntity)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

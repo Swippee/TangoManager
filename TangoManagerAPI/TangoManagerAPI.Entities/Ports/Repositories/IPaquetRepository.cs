@@ -11,4 +11,5 @@ public interface IPaquetRepository
 
     Task<IEnumerable<PaquetEntity>> GetPaquetsAsync();
     Task<PaquetEntity> GetPaquetByNameAsync(string name);
+    Task SavePacketAsync(PaquetEntity packetEntity);
 }

@@ -1,31 +1,47 @@
 ﻿using System;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using TangoManagerAPI.Entities.Ports;
 
 namespace TangoManagerAPI.Entities.Models
 {
-    public class PaquetEntity
+    [Serializable]
+    public class PaquetEntity : ICloneable<PaquetEntity>
     {
         public PaquetEntity()
         {
 
         }
 
-        public static PaquetEntity Create(string packetName, string description)
+        public PaquetEntity (string packetName, string description)
         {
             if (string.IsNullOrEmpty(packetName))
                 throw new ArgumentNullException(nameof(packetName), "Packet name cannot be null or empty!");
 
-            return new PaquetEntity
-            {
-                DateCreation = DateTime.UtcNow,
-                Nom = packetName,
-                Description = description
-            };
+            DateCreation = DateTime.UtcNow;
+            Nom = packetName;
+            Description = description;
         }
 
         public string Nom { get; set; }
         public string Description { get; set; } = string.Empty;
         public DateTime DateCreation { get; set; }
         public DateTime? DateDernierQuiz { get; set; }
+
+
+        public PaquetEntity Clone()
+        {
+            using var ms = new MemoryStream();
+            var formatter = new BinaryFormatter();
+#pragma warning disable SYSLIB0011
+            formatter.Serialize(ms, this);
+#pragma warning restore SYSLIB0011
+            ms.Position = 0;
+            ms.Seek(0, SeekOrigin.Begin);
+#pragma warning disable SYSLIB0011
+            return (PaquetEntity)formatter.Deserialize(ms);
+#pragma warning restore SYSLIB0011
+        }
 
         public override bool Equals(object obj)
         {

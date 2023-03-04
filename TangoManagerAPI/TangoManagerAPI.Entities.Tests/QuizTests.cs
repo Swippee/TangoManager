@@ -28,7 +28,7 @@ namespace TangoManagerAPI.Entities.Tests
                 Nom = "Quiz1"
             };
 
-            var quiz = QuizEntity.Create(carteEntity.Id, paquet.Nom);
+            var quiz = new QuizEntity(carteEntity.Id, paquet.Nom);
 
             var quizAggregate = new QuizAggregate(quiz, paquet, new List<CarteEntity> {carteEntity});
 
@@ -69,7 +69,7 @@ namespace TangoManagerAPI.Entities.Tests
                 Nom = "Quiz1"
             };
 
-            var quiz = QuizEntity.Create(carteEntity.Id, paquet.Nom);
+            var quiz = new QuizEntity(carteEntity.Id, paquet.Nom);
 
             var quizAggregate = new QuizAggregate(quiz, paquet, new List<CarteEntity> {carteEntity});
 
@@ -96,7 +96,7 @@ namespace TangoManagerAPI.Entities.Tests
             //Then
             Assert.Throws<EmptyPaquetException>(() =>
             {
-                var quiz = QuizEntity.Create(1, paquet.Nom);
+                var quiz = new QuizEntity(1, paquet.Nom);
                 var _ = new QuizAggregate(quiz, paquet, Enumerable.Empty<CarteEntity>());
             });
         }
@@ -135,7 +135,7 @@ namespace TangoManagerAPI.Entities.Tests
                 Description = "Book QuizAggregate",
                 Nom = "Quiz1"
             };
-            var quiz = QuizEntity.Create(carteEntity1.Id, paquet.Nom);
+            var quiz = new QuizEntity(carteEntity1.Id, paquet.Nom);
             var quizAggregate = new QuizAggregate(quiz, paquet, new List<CarteEntity> {carteEntity1, carteEntity2});
 
             //When

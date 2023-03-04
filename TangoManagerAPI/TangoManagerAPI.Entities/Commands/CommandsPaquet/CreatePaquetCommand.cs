@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
-using TangoManagerAPI.Entities.Commands;
 using TangoManagerAPI.Entities.Models;
 using TangoManagerAPI.Entities.Ports.Routers;
 
-namespace TangoManagerAPI.Infrastructures.Handlers
+namespace TangoManagerAPI.Entities.Commands.CommandsPaquet
 {
     public sealed class CreatePaquetCommand : ACommand<PaquetEntity, CreatePaquetCommand>
     {

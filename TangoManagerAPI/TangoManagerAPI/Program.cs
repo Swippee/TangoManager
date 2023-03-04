@@ -1,4 +1,6 @@
-using TangoManagerAPI.Entities.Commands;
+using TangoManagerAPI.Entities.Commands.CommandsPaquet;
+using TangoManagerAPI.Entities.Commands.CommandsQuiz;
+using TangoManagerAPI.Entities.Events.QuizAggregateEvents;
 using TangoManagerAPI.Entities.Ports.Repositories;
 using TangoManagerAPI.Entities.Ports.Routers;
 using TangoManagerAPI.Entities.Queries;
@@ -19,6 +21,9 @@ builder.Services.AddSingleton<CommandHandler>();
 builder.Services.AddSingleton<QueryRouter>();
 builder.Services.AddSingleton<CommandRouter>();
 
+builder.Services.AddSingleton<EventRouter>();
+builder.Services.AddSingleton<EventsHandler>();
+
 builder.Services.AddSingleton<IQueryRouter>(p => {
     var queryRouter = p.GetRequiredService<QueryRouter>();
 
@@ -35,8 +40,23 @@ builder.Services.AddSingleton<ICommandRouter>(p => {
     var handler = p.GetRequiredService<CommandHandler>();
 
     commandRouter.AddCommandHandler<CreatePaquetCommand>(handler);
+    commandRouter.AddCommandHandler<CreateQuizCommand>(handler);
+    commandRouter.AddCommandHandler<AnswerQuizCommand>(handler);
 
     return commandRouter;
+});
+
+builder.Services.AddSingleton<IEventRouter>(p => {
+    var eventRouter = p.GetRequiredService<EventRouter>();
+
+    var handler = p.GetRequiredService<EventsHandler>();
+
+    eventRouter.AddEventHandler<QuizAnsweredEvent>(handler);
+    eventRouter.AddEventHandler<QuizCardEntityAddedEvent>(handler);
+    eventRouter.AddEventHandler<PacketUpdatedEvent>(handler);
+    eventRouter.AddEventHandler<CardUpdatedEvent>(handler);
+
+    return eventRouter;
 });
 
 

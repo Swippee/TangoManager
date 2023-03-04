@@ -10,6 +10,8 @@ namespace TangoManagerAPI.Entities.Models
     {
         public CarteEntity CurrentCard { get; internal set; }
 
+        public PaquetEntity PacketEntity { get; internal set; }
+
         public IQuizState CurrentState { get; internal set; }
 
         internal ICollection<CarteEntity> AnsweredCardsCollection { get; }
@@ -28,6 +30,8 @@ namespace TangoManagerAPI.Entities.Models
         internal ICollection<QuizCardEntity> QuizCardsCollection { get; }
         public IEnumerable<QuizCardEntity> QuizCards => QuizCardsCollection;
 
+        internal ICollection<AEvent> EventsCollection { get; }
+        
 
         public QuizAggregate(QuizEntity quiz, PaquetEntity packet, IEnumerable<CarteEntity> packetCards) : 
         this(quiz, packet, packetCards, Enumerable.Empty<QuizCardEntity>())
@@ -37,10 +41,11 @@ namespace TangoManagerAPI.Entities.Models
 
         public QuizAggregate(QuizEntity quiz, PaquetEntity packet, IEnumerable<CarteEntity> packetCards, IEnumerable<QuizCardEntity> quizCards)
         {
+            EventsCollection = new List<AEvent>();
             PacketCardsCollection = packetCards.ToList();
             QuizCardsCollection = quizCards.ToList();
             RootEntity = quiz;
-            packet.DateDernierQuiz = DateTime.UtcNow;
+            PacketEntity = packet;
 
             if (!PacketCardsCollection.Any())
                 throw new EmptyPaquetException("Cannot create a QuizAggregate with an empty Packet!");
@@ -64,7 +69,7 @@ namespace TangoManagerAPI.Entities.Models
         public IEnumerable<AEvent> Answer(string answer)
         {
             CurrentState.Answer(answer);
-            return Enumerable.Empty<AEvent>();
+            return EventsCollection;
         }
 
         public QuizEntity RootEntity { get; }
