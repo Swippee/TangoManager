@@ -38,7 +38,7 @@ namespace TangoManagerAPI.Entities.Tests
             //Then
             Assert.Contains(quizAggregate.CorrectlyAnsweredCards, x => x.Id == carteEntity.Id);
             Assert.Contains(quizAggregate.AnsweredCards, x => x.Id == carteEntity.Id);
-            Assert.True(quizAggregate.QuizState is QuizFinishedState);
+            Assert.True(quizAggregate.CurrentState is QuizFinishedState);
             Assert.True(quiz.ModificationDate != null);
             Assert.True(quiz.TotalScore == carteEntity.Score);
             Assert.True(carteEntity.DateDernierQuiz != null);
@@ -145,7 +145,7 @@ namespace TangoManagerAPI.Entities.Tests
             Assert.True(quizAggregate.QuizCards.Count(x => !x.IsCorrect) == 0);
             Assert.True(quizAggregate.QuizCards.Count(x => x.IsCorrect) == 1);
             Assert.True(quizAggregate.CurrentCard.Equals(carteEntity2));
-            Assert.True(quizAggregate.QuizState is QuizActiveState);
+            Assert.True(quizAggregate.CurrentState is QuizActiveState);
         }
 
     }

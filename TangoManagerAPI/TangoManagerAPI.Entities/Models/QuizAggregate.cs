@@ -10,7 +10,7 @@ namespace TangoManagerAPI.Entities.Models
     {
         public CarteEntity CurrentCard { get; internal set; }
 
-        public IQuizState QuizState { get; private set; }
+        public IQuizState CurrentState { get; internal set; }
 
         internal ICollection<CarteEntity> AnsweredCardsCollection { get; }
         public IEnumerable<CarteEntity> AnsweredCards => AnsweredCardsCollection;
@@ -55,20 +55,15 @@ namespace TangoManagerAPI.Entities.Models
             if (string.IsNullOrEmpty(quiz.CurrentState))
                 throw new QuizInvalidStateException("Quiz state cannot be null or empty!");
             if (string.Equals(quiz.CurrentState, QuizActiveState.StateName, StringComparison.OrdinalIgnoreCase))
-                QuizState = new QuizActiveState(this);
+                CurrentState = new QuizActiveState(this);
             else if (string.Equals(quiz.CurrentState, QuizFinishedState.StateName, StringComparison.OrdinalIgnoreCase))
-                QuizState = new QuizFinishedState();
+                CurrentState = new QuizFinishedState();
             else throw new QuizInvalidStateException($"Could not parse state {quiz.CurrentState}");
-        }
-
-        internal void ChangeState(IQuizState state)
-        {
-            QuizState = state;
         }
 
         public IEnumerable<AEvent> Answer(string answer)
         {
-            QuizState.Answer(answer);
+            CurrentState.Answer(answer);
             return Enumerable.Empty<AEvent>();
         }
 

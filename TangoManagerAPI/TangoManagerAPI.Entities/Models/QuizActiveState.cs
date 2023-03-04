@@ -40,11 +40,13 @@ namespace TangoManagerAPI.Entities.Models
 
             if (!notAnsweredCards.Any())
             {
-                _quizAggregate.ChangeState(new QuizFinishedState());
+                _quizAggregate.CurrentState = new QuizFinishedState();
+                _quizEntity.CurrentState = _quizAggregate.CurrentState.ToString();
             }
             else
             {
-                _quizAggregate.CurrentCard = notAnsweredCards.FirstOrDefault();
+                _quizAggregate.CurrentCard = notAnsweredCards.First();
+                _quizEntity.CurrentCardId = _quizAggregate.CurrentCard.Id;
             }
         }
 
