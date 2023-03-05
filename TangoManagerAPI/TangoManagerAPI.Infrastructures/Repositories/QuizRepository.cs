@@ -51,13 +51,13 @@ namespace TangoManagerAPI.Infrastructures.Repositories
 
             quiz.QuizCardsCollection = quizCards.ToList();
 
-            query = "select * from Paquet where PacketName=@Name";
+            query = "select * from Paquet where Name=@Name";
             var packet = await connection.QueryFirstOrDefaultAsync<PaquetEntity>(query, new { Name = quiz.PacketName });
           
             if (packet == null)
                 throw new EntityDoNotExistException($"No packet found with the name {quiz.PacketName}.");
 
-            query = "select * from Cards where PacketName=@Name";
+            query = "select * from Carte where PacketName=@Name";
             var cards = await connection.QueryAsync<CarteEntity>(query, new { Name = quiz.PacketName });
 
             packet.CardsCollection=cards.ToList();

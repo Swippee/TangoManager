@@ -22,14 +22,17 @@ namespace TangoManagerAPI.Entities.Models
         public void Answer(string answer)
         {
             var card = _quizAggregate.CurrentCard;
-
+            if (_quizEntity.Id== null) 
+            {
+                throw new ArgumentNullException("The Quiz Id can't be NULL.");
+            }
             card.LastQuiz = DateTime.UtcNow;
             _quizAggregate.AnsweredCardsCollection.Add(card);
             _quizAggregate.EventsCollection.Add(new CardUpdatedEvent(card));
 
             if (string.Equals(card.Answer, answer, StringComparison.InvariantCultureIgnoreCase))
             {
-                var quizCardEntity = new QuizCardEntity(card.Id, _quizEntity.Id, true);
+                var quizCardEntity = new QuizCardEntity(card.Id, _quizEntity.Id.Value, true);
                 _quizAggregate.CorrectlyAnsweredCardsCollection.Add(card);
                 _quizAggregate.AddedQuizCardsCollection.Add(quizCardEntity);
                 _quizEntity.QuizCardsCollection.Add(quizCardEntity);
@@ -39,7 +42,7 @@ namespace TangoManagerAPI.Entities.Models
             }
             else
             {
-                var quizCardEntity = new QuizCardEntity(card.Id, _quizEntity.Id, false);
+                var quizCardEntity = new QuizCardEntity(card.Id, _quizEntity.Id.Value, false);
                 _quizAggregate.IncorrectlyAnsweredCardsCollection.Add(card);
                 _quizAggregate.AddedQuizCardsCollection.Add(quizCardEntity);
                 _quizEntity.QuizCardsCollection.Add(quizCardEntity);
