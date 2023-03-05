@@ -19,15 +19,15 @@ namespace TangoManagerAPI.Entities.Models
             if (string.IsNullOrEmpty(packetName))
                 throw new ArgumentNullException(nameof(packetName), "Packet name cannot be null or empty!");
 
-            DateCreation = DateTime.UtcNow;
-            Nom = packetName;
+            LastModification = DateTime.UtcNow;
+            Name = packetName;
             Description = description;
         }
 
-        public string Nom { get; set; }
+        public string Name { get; set; }
         public string Description { get; set; } = string.Empty;
-        public DateTime DateCreation { get; set; }
-        public DateTime? DateDernierQuiz { get; set; }
+        public DateTime LastModification { get; set; }
+        public DateTime? LastQuiz { get; set; }
 
         public ICollection<CarteEntity> CardsCollection { get; set; } = new List<CarteEntity>();
 
@@ -47,12 +47,12 @@ namespace TangoManagerAPI.Entities.Models
 
         public override bool Equals(object obj)
         {
-            return obj is PaquetEntity packet && string.Equals(packet.Nom, Nom, StringComparison.OrdinalIgnoreCase);
+            return obj is PaquetEntity packet && string.Equals(packet.Name, Name, StringComparison.OrdinalIgnoreCase);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Nom);
+            return HashCode.Combine(Name);
         }
     }
 

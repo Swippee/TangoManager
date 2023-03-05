@@ -32,12 +32,12 @@ namespace TangoManagerAPI.Infrastructures.Handlers
            var paquetEntity = await _paquetRepository.GetPaquetByNameAsync(command.Name);
 
             if (paquetEntity != null) {
-                throw new EntityAlreadyExistsException($"Move entity with name {paquetEntity.Nom} already exists, cannot add move with duplicate name.");
+                throw new EntityAlreadyExistsException($"Move entity with name {paquetEntity.Name} already exists, cannot add move with duplicate name.");
             }
 
             paquetEntity = new PaquetEntity
             {
-                Nom=command.Name,
+                Name=command.Name,
                 Description=command.Description,
             };
 
@@ -49,9 +49,9 @@ namespace TangoManagerAPI.Infrastructures.Handlers
         {
             var quizAggregate = await _quizRepository.GetQuizByIdAsync(command.QuizId);
 
-            await _quizRepository.SaveQuizAsync(quizAggregate);
-
             var events = quizAggregate.Answer(command.Answer);
+
+            await _quizRepository.SaveQuizAsync(quizAggregate);
 
             foreach (var @event in events)
             {
@@ -66,10 +66,10 @@ namespace TangoManagerAPI.Infrastructures.Handlers
             var packet = await _paquetRepository.GetPaquetByNameAsync(command.PacketName);
             
             var currentCard = packet.CardsCollection
-                .Where(x => x.DateDernierQuiz != null)
-                .MinBy(x => x.DateDernierQuiz) ?? packet.CardsCollection.First();
+                .Where(x => x.LastQuiz != null)
+                .MinBy(x => x.LastQuiz) ?? packet.CardsCollection.First();
 
-            var quiz = new QuizEntity(currentCard.Id, packet.Nom);
+            var quiz = new QuizEntity(currentCard.Id, packet.Name);
             var quizAggregate = new QuizAggregate(quiz, packet);
 
             await _quizRepository.SaveQuizAsync(quizAggregate);

@@ -47,10 +47,10 @@ namespace TangoManagerAPI.Infrastructures.Repositories
 
             await connection.OpenAsync();
 
-            const string packetQuery = "select * from Paquet WHERE Nom=@Name";
+            const string packetQuery = "select * from Paquet WHERE Name=@Name";
             var packetEntity = await connection.QueryFirstOrDefaultAsync<PaquetEntity>(packetQuery, new { Name = name });
 
-            const string cardsQuery = "select * from Carte WHERE PaquetNom=@Name";
+            const string cardsQuery = "select * from Carte WHERE PacketName=@Name";
             var cardEntities = await connection.QueryAsync<CarteEntity>(cardsQuery, new { Name = name });
 
             packetEntity.CardsCollection = cardEntities.ToList();
@@ -68,7 +68,7 @@ namespace TangoManagerAPI.Infrastructures.Repositories
             using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
             {
                 await connection.OpenAsync();
-                var query = "Insert into Paquet (Nom,Description,Score,DateCreation,DateDernierQuiz) Values (@Nom,@Description,NULL,GetDate(),NULL)";
+                var query = "Insert into Paquet (Name,Description,Score,LastModification,LastQuiz) Values (@Nom,@Description,NULL,GetDate(),NULL)";
                 await connection.ExecuteAsync(query, paquet);
             }
 
@@ -119,5 +119,7 @@ namespace TangoManagerAPI.Infrastructures.Repositories
             }
 
         }
+
+
     }
 }

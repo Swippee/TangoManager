@@ -11,25 +11,25 @@ namespace TangoManagerAPI.Entities.Tests
             //Given
             var carteEntity = new CarteEntity
             {
-                Reponse = "Alexandre Dumas",
-                DateCreation = DateTime.UtcNow,
+                Answer = "Alexandre Dumas",
+                LastModification = DateTime.UtcNow,
                 Id = 1,
-                DateDernierQuiz = null,
-                PaquetNom = "Famille",
+                LastQuiz = null,
+                PacketName = "Famille",
                 Score = 10.0m,
                 Question = "The Three Musketeers"
             };
 
             var paquet = new PaquetEntity
             {
-                DateCreation = DateTime.UtcNow,
-                DateDernierQuiz = null,
+                LastModification = DateTime.UtcNow,
+                LastQuiz = null,
                 Description = "Book QuizAggregate",
-                Nom = "Quiz1",
+                Name = "Quiz1",
                 CardsCollection = { carteEntity }
             };
 
-            var quiz = new QuizEntity(carteEntity.Id, paquet.Nom);
+            var quiz = new QuizEntity(carteEntity.Id, paquet.Name);
 
             var quizAggregate = new QuizAggregate(quiz, paquet);
 
@@ -40,10 +40,10 @@ namespace TangoManagerAPI.Entities.Tests
             Assert.Contains(quizAggregate.CorrectlyAnsweredCards, x => x.Id == carteEntity.Id);
             Assert.Contains(quizAggregate.AnsweredCards, x => x.Id == carteEntity.Id);
             Assert.True(quizAggregate.CurrentState is QuizFinishedState);
-            Assert.True(quiz.ModificationDate != null);
+            Assert.True(quiz.LastModification != null);
             Assert.True(quiz.TotalScore == carteEntity.Score);
-            Assert.True(carteEntity.DateDernierQuiz != null);
-            Assert.True(paquet.DateDernierQuiz != null);
+            Assert.True(carteEntity.LastQuiz != null);
+            Assert.True(paquet.LastQuiz != null);
         }
 
 
@@ -53,25 +53,25 @@ namespace TangoManagerAPI.Entities.Tests
             //Given
             var carteEntity = new CarteEntity
             {
-                Reponse = "Alexandre Dumas",
-                DateCreation = DateTime.UtcNow,
+                Answer = "Alexandre Dumas",
+                LastModification = DateTime.UtcNow,
                 Id = 1,
-                DateDernierQuiz = null,
-                PaquetNom = "Artiste",
+                LastQuiz = null,
+                PacketName = "Artiste",
                 Score = 10.0m,
                 Question = "The Three Musketeers"
             };
 
             var paquet = new PaquetEntity
             {
-                DateCreation = DateTime.UtcNow,
-                DateDernierQuiz = null,
+                LastModification = DateTime.UtcNow,
+                LastQuiz = null,
                 Description = "Book QuizAggregate",
-                Nom = "Quiz1",
+                Name = "Quiz1",
                 CardsCollection = { carteEntity }
             };
 
-            var quiz = new QuizEntity(carteEntity.Id, paquet.Nom);
+            var quiz = new QuizEntity(carteEntity.Id, paquet.Name);
 
             var quizAggregate = new QuizAggregate(quiz, paquet);
 
@@ -89,16 +89,16 @@ namespace TangoManagerAPI.Entities.Tests
             //Given
             var paquet = new PaquetEntity
             {
-                DateCreation = DateTime.UtcNow,
-                DateDernierQuiz = null,
+                LastModification = DateTime.UtcNow,
+                LastQuiz = null,
                 Description = "Book QuizAggregate",
-                Nom = "Quiz1"
+                Name = "Quiz1"
             };
 
             //Then
             Assert.Throws<EmptyPaquetException>(() =>
             {
-                var quiz = new QuizEntity(1, paquet.Nom);
+                var quiz = new QuizEntity(1, paquet.Name);
                 var _ = new QuizAggregate(quiz, paquet);
             });
         }
@@ -110,35 +110,35 @@ namespace TangoManagerAPI.Entities.Tests
             //Given
             var carteEntity1 = new CarteEntity
             {
-                Reponse = "Alexandre Dumas",
-                DateCreation = DateTime.UtcNow,
+                Answer = "Alexandre Dumas",
+                LastModification = DateTime.UtcNow,
                 Id = 1,
-                DateDernierQuiz = null,
-                PaquetNom = "Famille", 
+                LastQuiz = null,
+                PacketName = "Famille", 
                 Score = 10.0m,
                 Question = "The Three Musketeers"
             };
 
             var carteEntity2 = new CarteEntity
             {
-                Reponse = "Fyodor Dostoyevsky",
-                DateCreation = DateTime.UtcNow,
+                Answer = "Fyodor Dostoyevsky",
+                LastModification = DateTime.UtcNow,
                 Id = 2,
-                DateDernierQuiz = null,
-                PaquetNom = "Famille",
+                LastQuiz = null,
+                PacketName = "Famille",
                 Score = 10.0m,
                 Question = "Crime and Punishment"
             };
 
             var paquet = new PaquetEntity
             {
-                DateCreation = DateTime.UtcNow,
-                DateDernierQuiz = null,
+                LastModification = DateTime.UtcNow,
+                LastQuiz = null,
                 Description = "Book QuizAggregate",
-                Nom = "Quiz1",
+                Name = "Quiz1",
                 CardsCollection = {carteEntity1, carteEntity2}
             };
-            var quiz = new QuizEntity(carteEntity1.Id, paquet.Nom);
+            var quiz = new QuizEntity(carteEntity1.Id, paquet.Name);
             var quizAggregate = new QuizAggregate(quiz, paquet);
 
             //When

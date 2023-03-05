@@ -25,21 +25,21 @@ namespace TangoManagerAPI.Entities.Models
             if (string.IsNullOrEmpty(answer))
                 throw new ArgumentNullException(nameof(answer), "Answer cannot be null or empty!");
 
-            PaquetNom = packetName;
+            PacketName = packetName;
             Question = question;
-            Reponse = answer;
+            Answer = answer;
             Score = score;
-            DateCreation = DateTime.UtcNow;
+            LastModification = DateTime.UtcNow;
         }
 
         public int Id { get; set; }
-        public string PaquetNom { get; set; }
+        public string PacketName { get; set; }
         public string Question { get; set; } = string.Empty;
-        public string Reponse { get; set; } = string.Empty;
+        public string Answer { get; set; } = string.Empty;
         public decimal Score { get; set; }
 
-        public DateTime DateCreation { get; set; }
-        public DateTime? DateDernierQuiz { get; set; }
+        public DateTime LastModification { get; set; }
+        public DateTime? LastQuiz { get; set; }
 
         public CarteEntity Clone()
         {

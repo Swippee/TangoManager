@@ -23,18 +23,18 @@ namespace TangoManagerAPI.Entities.Models
         {
             var card = _quizAggregate.CurrentCard;
 
-            card.DateDernierQuiz = DateTime.UtcNow;
+            card.LastQuiz = DateTime.UtcNow;
             _quizAggregate.AnsweredCardsCollection.Add(card);
             _quizAggregate.EventsCollection.Add(new CardUpdatedEvent(card));
 
-            if (string.Equals(card.Reponse, answer, StringComparison.InvariantCultureIgnoreCase))
+            if (string.Equals(card.Answer, answer, StringComparison.InvariantCultureIgnoreCase))
             {
                 var quizCardEntity = new QuizCardEntity(card.Id, _quizEntity.Id, true);
                 _quizAggregate.CorrectlyAnsweredCardsCollection.Add(card);
                 _quizAggregate.AddedQuizCardsCollection.Add(quizCardEntity);
                 _quizEntity.QuizCardsCollection.Add(quizCardEntity);
                 _quizEntity.TotalScore += card.Score;
-                _quizEntity.ModificationDate = DateTime.UtcNow;
+                _quizEntity.LastModification = DateTime.UtcNow;
                 _quizAggregate.EventsCollection.Add(new QuizCardEntityAddedEvent(quizCardEntity));
             }
             else
@@ -52,7 +52,7 @@ namespace TangoManagerAPI.Entities.Models
             {
                 _quizAggregate.CurrentState = new QuizFinishedState();
                 _quizEntity.CurrentState = _quizAggregate.CurrentState.ToString();
-                _packetEntity.DateDernierQuiz = DateTime.UtcNow;
+                _packetEntity.LastQuiz = DateTime.UtcNow;
                 _quizAggregate.EventsCollection.Add(new PacketUpdatedEvent(_packetEntity));
             }
             else

@@ -27,7 +27,7 @@ namespace TangoManagerAPI.Entities.Models
         public int CurrentCardId { get; set; }
         public string CurrentState { get; set; }
         public DateTime CreationDate { get; set; }
-        public DateTime? ModificationDate { get; set; }
+        public DateTime? LastModification { get; set; }
         public decimal TotalScore { get; set; }
 
         public ICollection<QuizCardEntity> QuizCardsCollection { get; set; } = new List<QuizCardEntity>();
