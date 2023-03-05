@@ -7,8 +7,6 @@ namespace TangoManagerAPI.Entities.Ports.Repositories;
 public interface ICartesRepository
 {
     Task AddCarteAsync(CarteEntity Carte);
-  
     Task<IEnumerable<CarteEntity>> GetCartesAsync();
     Task<IEnumerable<CarteEntity>> GetCartesByPaquetNameAsync(string paquetName);
-    Task SaveCardAsync(CarteEntity cardEntity);
 }

@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using TangoManagerAPI.Entities.Commands.CommandsPaquet;
 using TangoManagerAPI.Entities.Commands.CommandsQuiz;
-using TangoManagerAPI.Entities.Events.QuizAggregateEvents;
 using TangoManagerAPI.Entities.Exceptions;
 using TangoManagerAPI.Entities.Models;
 using TangoManagerAPI.Entities.Ports.Handlers;
@@ -50,15 +49,16 @@ namespace TangoManagerAPI.Infrastructures.Handlers
 
         public async Task<QuizAggregate> HandleAsync(AnswerQuizCommand command)
         {
-            var quiz = await _quizRepository.GetQuizByIdAsync(command.QuizId);
-            var packet = await _paquetRepository.GetPaquetByNameAsync(quiz.PacketName);
-            var packetCards = await _cartesRepository.GetCartesByPaquetNameAsync(quiz.PacketName);
-            var quizCards = await _quizRepository.GetQuizCardsByQuizIdAsync(quiz.Id);
+            var quizAggregate = await _quizRepository.GetQuizByIdAsync(command.QuizId);
 
-            var quizAggregate = new QuizAggregate(quiz, packet, packetCards, quizCards);
+            await _quizRepository.SaveQuizAsync(quizAggregate);
+
             var events = quizAggregate.Answer(command.Answer);
 
-            await Task.WhenAll(events.Select(async x => await x.DispatchAsync(_eventRouter)));
+            foreach (var @event in events)
+            {
+                @event.Dispatch(_eventRouter);
+            }
             
             return quizAggregate;
         }
@@ -78,7 +78,7 @@ namespace TangoManagerAPI.Infrastructures.Handlers
             var quiz = new QuizEntity(currentCard.Id, command.PacketName);
             var quizAggregate = new QuizAggregate(quiz, packet, packetCards);
 
-            await new QuizCreatedEvent(quiz).DispatchAsync(_eventRouter);
+            await _quizRepository.SaveQuizAsync(quizAggregate);
 
             return quizAggregate;
         }

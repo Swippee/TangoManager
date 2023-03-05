@@ -19,7 +19,7 @@ namespace TangoManagerAPI.Entities.Events
     [Serializable]
     public abstract class AEvent
     {
-        public abstract Task DispatchAsync(IEventRouter eventRouter);
+        public abstract void Dispatch(IEventRouter eventRouter);
     }
 
 

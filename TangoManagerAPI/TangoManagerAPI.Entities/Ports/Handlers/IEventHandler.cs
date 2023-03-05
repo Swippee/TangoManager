@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using TangoManagerAPI.Entities.Events;
 
 namespace TangoManagerAPI.Entities.Ports.Handlers
@@ -8,7 +7,7 @@ namespace TangoManagerAPI.Entities.Ports.Handlers
     {
         public Type SupportedEventType => typeof(TEvent);
 
-        Task HandleAsync(TEvent @event);
+        void Handle(TEvent @event);
     }
 
     public interface IEventHandler

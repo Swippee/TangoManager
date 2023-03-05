@@ -29,15 +29,17 @@ namespace TangoManagerAPI.Infrastructures.Routers
             }
         }
 
-        public async Task RouteAsync<TEvent>(TEvent @event) where TEvent : AEvent
+        public Task RouteAsync<TEvent>(TEvent @event) where TEvent : AEvent
         {
             if (!_eventHandlers.TryGetValue(@event.GetType(), out var handlers)) 
-                 return;
+                 return Task.CompletedTask;
 
             foreach (var eventHandler in handlers)
             {
-                await ((IEventHandler<TEvent>)eventHandler).HandleAsync(@event);
+                ((IEventHandler<TEvent>)eventHandler).Handle(@event);
             }
+
+            return Task.CompletedTask;
         }
     }
 }

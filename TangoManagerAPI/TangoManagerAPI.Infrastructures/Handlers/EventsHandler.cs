@@ -1,7 +1,5 @@
-﻿using System.Threading.Tasks;
-using TangoManagerAPI.Entities.Events.QuizAggregateEvents;
+﻿using TangoManagerAPI.Entities.Events.QuizAggregateEvents;
 using TangoManagerAPI.Entities.Ports.Handlers;
-using TangoManagerAPI.Entities.Ports.Repositories;
 
 namespace TangoManagerAPI.Infrastructures.Handlers
 {
@@ -12,40 +10,35 @@ namespace TangoManagerAPI.Infrastructures.Handlers
         IEventHandler<CardUpdatedEvent>,
         IEventHandler<QuizCreatedEvent>
     {
-        private readonly IQuizRepository _quizRepository;
-        private readonly ICartesRepository _cartesRepository;
-        private readonly IPaquetRepository _paquetRepository;
 
-        public EventsHandler(IQuizRepository quizRepository, ICartesRepository cartesRepository, IPaquetRepository paquetRepository)
+        public EventsHandler()
         {
-            _quizRepository = quizRepository;
-            _cartesRepository = cartesRepository;
-            _paquetRepository = paquetRepository;
+
         }
 
-        public async Task HandleAsync(QuizAnsweredEvent @event)
+        public async void Handle(QuizAnsweredEvent @event)
         {
-            await _quizRepository.SaveQuizAsync(@event.Data);
+           
         }
 
-        public async Task HandleAsync(QuizCardEntityAddedEvent @event)
+        public async void Handle(QuizCardEntityAddedEvent @event)
         {
-            await _quizRepository.SaveQuizCard(@event.Data);
+          
         }
 
-        public async Task HandleAsync(PacketUpdatedEvent @event)
+        public async void Handle(PacketUpdatedEvent @event)
         {
-            await _paquetRepository.SavePacketAsync(@event.Data);
+           
         }
 
-        public async Task HandleAsync(CardUpdatedEvent @event)
+        public async void Handle(CardUpdatedEvent @event)
         {
-            await _cartesRepository.SaveCardAsync(@event.Data);
+
         }
 
-        public async Task HandleAsync(QuizCreatedEvent @event)
+        public async void Handle(QuizCreatedEvent @event)
         {
-            await _quizRepository.SaveQuizAsync(@event.Data);
+           
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using TangoManagerAPI.Entities.Models;
+﻿using TangoManagerAPI.Entities.Models;
 using TangoManagerAPI.Entities.Ports.Routers;
 
 namespace TangoManagerAPI.Entities.Events.QuizAggregateEvents
@@ -11,7 +10,7 @@ namespace TangoManagerAPI.Entities.Events.QuizAggregateEvents
             
         }
 
-        public override async Task DispatchAsync(IEventRouter eventRouter)
+        public override async void Dispatch(IEventRouter eventRouter)
         {
             await eventRouter.RouteAsync(this);
         }
