@@ -43,15 +43,19 @@ namespace TangoManagerAPI.Infrastructures.Repositories
         /// <returns></returns>
         public async Task<PaquetEntity> GetPaquetByNameAsync(string name)
         {
+            await using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
 
-            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
-            {
-                await connection.OpenAsync();
-                var query = "select * from Paquet WHERE Nom=@Name";
-                var allTransaction = await connection.QueryFirstOrDefaultAsync<PaquetEntity>(query, new { Name = name });
-                return allTransaction;
-            }
+            await connection.OpenAsync();
 
+            const string packetQuery = "select * from Paquet WHERE Nom=@Name";
+            var packetEntity = await connection.QueryFirstOrDefaultAsync<PaquetEntity>(packetQuery, new { Name = name });
+
+            const string cardsQuery = "select * from Carte WHERE PaquetNom=@Name";
+            var cardEntities = await connection.QueryAsync<CarteEntity>(cardsQuery, new { Name = name });
+
+            packetEntity.CardsCollection = cardEntities.ToList();
+
+            return packetEntity;
         }
 
         /// <summary>
