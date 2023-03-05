@@ -22,7 +22,7 @@ namespace TangoManagerAPI.Entities.Models
             CurrentCardId = currentCardId;
         }
 
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public string PacketName { get; set; }
         public int CurrentCardId { get; set; }
         public string CurrentState { get; set; }
