@@ -18,15 +18,13 @@ namespace TangoManagerAPI.Infrastructures.Handlers
         private readonly IPaquetRepository _paquetRepository;
         private readonly IEventRouter _eventRouter;
         private readonly IQuizRepository _quizRepository;
-        private readonly ICartesRepository _cartesRepository;
-        
 
-        public CommandHandler(IPaquetRepository paquetRepository, IEventRouter eventRouter, IQuizRepository quizRepository, ICartesRepository cartesRepository)
+
+        public CommandHandler(IPaquetRepository paquetRepository, IEventRouter eventRouter, IQuizRepository quizRepository)
         {
             _paquetRepository = paquetRepository;
             _eventRouter = eventRouter;
             _quizRepository = quizRepository;
-            _cartesRepository = cartesRepository;
         }
 
         public async Task<PaquetEntity> HandleAsync(CreatePaquetCommand command)
@@ -66,17 +64,13 @@ namespace TangoManagerAPI.Infrastructures.Handlers
         public async Task<QuizAggregate> HandleAsync(CreateQuizCommand command)
         {
             var packet = await _paquetRepository.GetPaquetByNameAsync(command.PacketName);
-            var packetCards = (await _cartesRepository.GetCartesByPaquetNameAsync(command.PacketName)).ToList();
-
-            if (!packetCards.Any())
-                throw new EmptyPaquetException($"Cannot create a Quiz with an empty Packet {packet.Nom}"!);
-
-            var currentCard = packetCards
+            
+            var currentCard = packet.CardsCollection
                 .Where(x => x.DateDernierQuiz != null)
-                .MinBy(x => x.DateDernierQuiz) ?? packetCards.First();
+                .MinBy(x => x.DateDernierQuiz) ?? packet.CardsCollection.First();
 
-            var quiz = new QuizEntity(currentCard.Id, command.PacketName);
-            var quizAggregate = new QuizAggregate(quiz, packet, packetCards);
+            var quiz = new QuizEntity(currentCard.Id, packet.Nom);
+            var quizAggregate = new QuizAggregate(quiz, packet);
 
             await _quizRepository.SaveQuizAsync(quizAggregate);
 

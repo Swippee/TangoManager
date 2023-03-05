@@ -58,7 +58,6 @@ builder.Services.AddSingleton<IEventRouter>(p => {
     eventRouter.AddEventHandler<QuizCardEntityAddedEvent>(handler);
     eventRouter.AddEventHandler<PacketUpdatedEvent>(handler);
     eventRouter.AddEventHandler<CardUpdatedEvent>(handler);
-    eventRouter.AddEventHandler<QuizCreatedEvent>(handler);
 
     return eventRouter;
 });

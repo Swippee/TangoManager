@@ -1,11 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using TangoManagerAPI.Entities.Ports.Routers;
+﻿using TangoManagerAPI.Entities.Ports.Routers;
 
 namespace TangoManagerAPI.Entities.Events
 {
-
-    [Serializable]
     public abstract class AEvent<TData> : AEvent
     {
         public TData Data { get; }
@@ -16,7 +12,6 @@ namespace TangoManagerAPI.Entities.Events
         }
     }
 
-    [Serializable]
     public abstract class AEvent
     {
         public abstract void Dispatch(IEventRouter eventRouter);

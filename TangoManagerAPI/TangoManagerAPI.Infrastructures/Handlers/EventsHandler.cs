@@ -7,8 +7,7 @@ namespace TangoManagerAPI.Infrastructures.Handlers
         IEventHandler<QuizAnsweredEvent>, 
         IEventHandler<QuizCardEntityAddedEvent>,
         IEventHandler<PacketUpdatedEvent>,
-        IEventHandler<CardUpdatedEvent>,
-        IEventHandler<QuizCreatedEvent>
+        IEventHandler<CardUpdatedEvent>
     {
 
         public EventsHandler()
@@ -34,11 +33,6 @@ namespace TangoManagerAPI.Infrastructures.Handlers
         public async void Handle(CardUpdatedEvent @event)
         {
 
-        }
-
-        public async void Handle(QuizCreatedEvent @event)
-        {
-           
         }
     }
 }

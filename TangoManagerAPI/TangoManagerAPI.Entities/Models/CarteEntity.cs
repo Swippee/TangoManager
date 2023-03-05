@@ -8,7 +8,30 @@ namespace TangoManagerAPI.Entities.Models
     [Serializable]
     public class CarteEntity : ICloneable<CarteEntity>
     {
-        
+
+        public CarteEntity()
+        {
+
+        }
+
+        public CarteEntity(string packetName, string question, string answer, decimal score)
+        {
+            if (string.IsNullOrEmpty(packetName))
+                throw new ArgumentNullException(nameof(packetName), "PacketName cannot be null or empty!");
+
+            if (string.IsNullOrEmpty(question))
+                throw new ArgumentNullException(nameof(question), "Question cannot be null or empty!");
+
+            if (string.IsNullOrEmpty(answer))
+                throw new ArgumentNullException(nameof(answer), "Answer cannot be null or empty!");
+
+            PaquetNom = packetName;
+            Question = question;
+            Reponse = answer;
+            Score = score;
+            DateCreation = DateTime.UtcNow;
+        }
+
         public int Id { get; set; }
         public string PaquetNom { get; set; }
         public string Question { get; set; } = string.Empty;

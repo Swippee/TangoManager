@@ -23,15 +23,16 @@ namespace TangoManagerAPI.Entities.Models
         {
             var card = _quizAggregate.CurrentCard;
 
-            _quizAggregate.AnsweredCardsCollection.Add(card);
             card.DateDernierQuiz = DateTime.UtcNow;
+            _quizAggregate.AnsweredCardsCollection.Add(card);
             _quizAggregate.EventsCollection.Add(new CardUpdatedEvent(card));
 
             if (string.Equals(card.Reponse, answer, StringComparison.InvariantCultureIgnoreCase))
             {
                 var quizCardEntity = new QuizCardEntity(card.Id, _quizEntity.Id, true);
                 _quizAggregate.CorrectlyAnsweredCardsCollection.Add(card);
-                _quizAggregate.QuizCardsCollection.Add(quizCardEntity);
+                _quizAggregate.AddedQuizCardsCollection.Add(quizCardEntity);
+                _quizEntity.QuizCardsCollection.Add(quizCardEntity);
                 _quizEntity.TotalScore += card.Score;
                 _quizEntity.ModificationDate = DateTime.UtcNow;
                 _quizAggregate.EventsCollection.Add(new QuizCardEntityAddedEvent(quizCardEntity));
@@ -40,11 +41,12 @@ namespace TangoManagerAPI.Entities.Models
             {
                 var quizCardEntity = new QuizCardEntity(card.Id, _quizEntity.Id, false);
                 _quizAggregate.IncorrectlyAnsweredCardsCollection.Add(card);
-                _quizAggregate.QuizCardsCollection.Add(quizCardEntity);
+                _quizAggregate.AddedQuizCardsCollection.Add(quizCardEntity);
+                _quizEntity.QuizCardsCollection.Add(quizCardEntity);
                 _quizAggregate.EventsCollection.Add(new QuizCardEntityAddedEvent(quizCardEntity));
             }
 
-            var notAnsweredCards = _quizAggregate.PacketCardsCollection.Except(_quizAggregate.AnsweredCardsCollection).ToList();
+            var notAnsweredCards = _packetEntity.CardsCollection.Except(_quizAggregate.AnsweredCardsCollection).ToList();
 
             if (!notAnsweredCards.Any())
             {

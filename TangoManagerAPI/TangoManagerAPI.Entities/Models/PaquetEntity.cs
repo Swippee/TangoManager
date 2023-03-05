@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using TangoManagerAPI.Entities.Ports;
@@ -28,6 +29,7 @@ namespace TangoManagerAPI.Entities.Models
         public DateTime DateCreation { get; set; }
         public DateTime? DateDernierQuiz { get; set; }
 
+        public ICollection<CarteEntity> CardsCollection { get; set; } = new List<CarteEntity>();
 
         public PaquetEntity Clone()
         {

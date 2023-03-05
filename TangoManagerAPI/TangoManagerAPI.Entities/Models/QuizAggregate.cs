@@ -8,15 +8,10 @@ namespace TangoManagerAPI.Entities.Models
 {
     public class QuizAggregate : IAggregateRoot<QuizEntity>
     {
-        public CarteEntity CurrentCard { get; internal set; }
-
-        public PaquetEntity PacketEntity { get; internal set; }
-
         public IQuizState CurrentState { get; internal set; }
 
         internal ICollection<CarteEntity> AnsweredCardsCollection { get; }
         public IEnumerable<CarteEntity> AnsweredCards => AnsweredCardsCollection;
-
 
         internal ICollection<CarteEntity> CorrectlyAnsweredCardsCollection { get; }
         public IEnumerable<CarteEntity> CorrectlyAnsweredCards => CorrectlyAnsweredCardsCollection;
@@ -24,38 +19,31 @@ namespace TangoManagerAPI.Entities.Models
         internal ICollection<CarteEntity> IncorrectlyAnsweredCardsCollection { get; }
         public IEnumerable<CarteEntity> IncorrectlyAnsweredCards => IncorrectlyAnsweredCardsCollection;
 
-        internal ICollection<CarteEntity> PacketCardsCollection { get; }
-        public IEnumerable<CarteEntity> PacketCards => PacketCardsCollection;
+        public IEnumerable<QuizCardEntity> AddedQuizCards => AddedQuizCardsCollection;
+        internal ICollection<QuizCardEntity> AddedQuizCardsCollection {get; }
 
-        internal ICollection<QuizCardEntity> QuizCardsCollection { get; }
-        public IEnumerable<QuizCardEntity> QuizCards => QuizCardsCollection;
+        public CarteEntity CurrentCard { get; internal set; }
+        public PaquetEntity PacketEntity { get; }
 
         internal ICollection<AEvent> EventsCollection { get; }
-        
 
-        public QuizAggregate(QuizEntity quiz, PaquetEntity packet, IEnumerable<CarteEntity> packetCards) : 
-        this(quiz, packet, packetCards, Enumerable.Empty<QuizCardEntity>())
-        {
+        public QuizEntity RootEntity { get; }
 
-        }
-
-        public QuizAggregate(QuizEntity quiz, PaquetEntity packet, IEnumerable<CarteEntity> packetCards, IEnumerable<QuizCardEntity> quizCards)
+        public QuizAggregate(QuizEntity quiz, PaquetEntity packetEntity)
         {
             EventsCollection = new List<AEvent>();
-            PacketCardsCollection = packetCards.ToList();
-            QuizCardsCollection = quizCards.ToList();
+            AddedQuizCardsCollection = new List<QuizCardEntity>();
             RootEntity = quiz;
-            PacketEntity = packet;
+            PacketEntity = packetEntity;
 
-            if (!PacketCardsCollection.Any())
-                throw new EmptyPaquetException($"Cannot create a QuizAggregate with an empty Packet {packet.Nom}!");
+            if (!packetEntity.CardsCollection.Any())
+                throw new EmptyPaquetException($"Cannot create a Quiz with an empty Packet {packetEntity.Nom}!");
 
-            CurrentCard = PacketCardsCollection.FirstOrDefault(x => x.Id == quiz.CurrentCardId) ?? throw new CardNotFoundException($"Could not find Card with such Id {quiz.CurrentCardId} inside packet {packet.Nom}!");
+            CurrentCard = packetEntity.CardsCollection.FirstOrDefault(x => x.Id == quiz.CurrentCardId) ?? throw new CardNotFoundException($"Could not find Card with such Id {quiz.CurrentCardId} inside packet {packetEntity.Nom}!");
 
-            AnsweredCardsCollection = PacketCardsCollection.Where(x => QuizCardsCollection.Any(y => y.CardId == x.Id)).ToList();
-            CorrectlyAnsweredCardsCollection = AnsweredCardsCollection.Where(x => QuizCardsCollection.Any(y => y.CardId == x.Id && y.IsCorrect)).ToList();
-            IncorrectlyAnsweredCardsCollection = AnsweredCardsCollection.Where(x => QuizCardsCollection.Any(y => y.CardId == x.Id && !y.IsCorrect)).ToList();
-
+            AnsweredCardsCollection = packetEntity.CardsCollection.Where(x => RootEntity.QuizCardsCollection.Any(y => y.CardId == x.Id)).ToList();
+            CorrectlyAnsweredCardsCollection = AnsweredCardsCollection.Where(x => RootEntity.QuizCardsCollection.Any(y => y.CardId == x.Id && y.IsCorrect)).ToList();
+            IncorrectlyAnsweredCardsCollection = AnsweredCardsCollection.Where(x => RootEntity.QuizCardsCollection.Any(y => y.CardId == x.Id && !y.IsCorrect)).ToList();
 
             if (string.IsNullOrEmpty(quiz.CurrentState))
                 throw new QuizInvalidStateException("Quiz state cannot be null or empty!");
@@ -71,7 +59,5 @@ namespace TangoManagerAPI.Entities.Models
             CurrentState.Answer(answer);
             return EventsCollection;
         }
-
-        public QuizEntity RootEntity { get; }
     }
 }

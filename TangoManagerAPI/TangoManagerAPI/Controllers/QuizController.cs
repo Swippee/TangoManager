@@ -1,12 +1,6 @@
-﻿using Dapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using System.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Mvc;
 using TangoManagerAPI.Entities.Commands.CommandsQuiz;
-using TangoManagerAPI.Entities.Ports.Exceptions;
 using TangoManagerAPI.Entities.Ports.Routers;
-using TangoManagerAPI.Entities.Queries;
 
 namespace TangoManagerAPI.Controllers
 {
@@ -25,29 +19,27 @@ namespace TangoManagerAPI.Controllers
         [HttpPost]
         [Route("")]
         [Route("Index")]
-        public async Task<ActionResult> CreateAsync([FromBody] string packetName)
+        public async Task<ActionResult> CreateAsync([FromBody] CreateQuizCommand createQuizCommand)
         {
-            var quizAggregate = await new CreateQuizCommand(packetName).ExecuteAsync(_commandRouter);
+            var quizAggregate = await createQuizCommand.ExecuteAsync(_commandRouter);
 
             return StatusCode(200, new
             {
                 Quiz = quizAggregate.RootEntity,
-                Packet = quizAggregate.PacketEntity,
-                PacketCards = quizAggregate.PacketCards
+                Packet = quizAggregate.PacketEntity
             });
         }
 
         [HttpPost]
         [Route("Answer")]
-        public async Task<ActionResult> AnswerAsync([FromBody] int quizId, [FromBody] string answer)
+        public async Task<ActionResult> AnswerAsync([FromBody] AnswerQuizCommand answerQuizCommand)
         {
-            var quizAggregate = await new AnswerQuizCommand(quizId, answer).ExecuteAsync(_commandRouter);
+            var quizAggregate = await answerQuizCommand.ExecuteAsync(_commandRouter);
 
             return StatusCode(200, new
             {
                 Quiz = quizAggregate.RootEntity,
                 Packet = quizAggregate.PacketEntity,
-                PacketCards = quizAggregate.PacketCards,
                 CurrentCard = quizAggregate.CurrentCard,
                 AnsweredCards = quizAggregate.AnsweredCards,
                 CorrectlyAnsweredCards = quizAggregate.CorrectlyAnsweredCards,
