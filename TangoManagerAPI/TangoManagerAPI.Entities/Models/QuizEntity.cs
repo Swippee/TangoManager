@@ -32,18 +32,23 @@ namespace TangoManagerAPI.Entities.Models
 
         public ICollection<QuizCardEntity> QuizCardsCollection { get; set; } = new List<QuizCardEntity>();
 
+        //        public QuizEntity Clone()
+        //        {
+        //            using var ms = new MemoryStream();
+        //            var formatter = new BinaryFormatter();
+        //#pragma warning disable SYSLIB0011
+        //            formatter.Serialize(ms, this);
+        //#pragma warning restore SYSLIB0011
+        //            ms.Position = 0;
+        //            ms.Seek(0, SeekOrigin.Begin);
+        //#pragma warning disable SYSLIB0011
+        //            return (QuizEntity)formatter.Deserialize(ms);
+        //#pragma warning restore SYSLIB0011
+        //        }
         public QuizEntity Clone()
         {
-            using var ms = new MemoryStream();
-            var formatter = new BinaryFormatter();
-#pragma warning disable SYSLIB0011
-            formatter.Serialize(ms, this);
-#pragma warning restore SYSLIB0011
-            ms.Position = 0;
-            ms.Seek(0, SeekOrigin.Begin);
-#pragma warning disable SYSLIB0011
-            return (QuizEntity)formatter.Deserialize(ms);
-#pragma warning restore SYSLIB0011
+            var quiz = (QuizEntity)MemberwiseClone();
+            return quiz;
         }
     }
 }

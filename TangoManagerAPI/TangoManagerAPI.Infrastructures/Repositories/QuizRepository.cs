@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Dapper.Transaction;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
@@ -73,37 +74,62 @@ namespace TangoManagerAPI.Infrastructures.Repositories
         public async Task SaveQuizAsync(QuizAggregate quizAggregate)
         {
             using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
+
             await connection.OpenAsync();
             string query = "";
+
+            // IMPOSSIBLE CASE: Function GetQuizByIdAsync called before stops the process if quizId not found
             if (quizAggregate.RootEntity.Id == null)
             {
-                // Faire le cas nouveau dans une transaction SQL
+                using var transaction = await connection.BeginTransactionAsync();
                 // Ajouter dans les tables Quizz le nouveau Quizz, dans la table QUIzzCard toutes les cartes
-                query = "Insert into ";
-                // step a :
-                // Insertion quiz
-                // step b
-                var quizId = await connection.ExecuteScalarAsync<int>(query);
+                query = "INSERT INTO Quiz (PacketName,CurrentCardId,CurrentState,CreationDate,LastModification,TotalScores) VALUES (@PacketName,@CurrentCardId,'ACTIVE',GetDate(),GetDate(),0); " +
+                        "SELECT CAST(SCOPE_IDENTITY() as int)";
+
+                var quizId = await transaction.ExecuteScalarAsync<int>(query, new { PacketName = quizAggregate.PacketEntity.Name, CurrentCardId = quizAggregate.CurrentCard.Id });
                 quizAggregate.RootEntity.Id = quizId;
 
+                query = "INSERT INTO QuizCards (IdQuiz,IdCard,IsCorrect) VALUES (@IdQuiz,@IdCard,@IsCorrect); ";
+                await transaction.ExecuteAsync(query, new { IdQuiz = quizId, CurrentCardId = quizAggregate.RootEntity.QuizCardsCollection.Last().CardId, IsCorrect= quizAggregate.RootEntity.QuizCardsCollection.Last().IsCorrect?"Correct":"Incorrect" });
+                await transaction.CommitAsync();
+            }
+            else
+            {
+                //{ TRANSACTION    APPLICATIVE 
+
+
+                // Ajouter une quizCard (celle répondue) à la collection
+
+                quizAggregate.AnsweredCards.ToList().Add(quizAggregate.CurrentCard);
+
+                if (quizAggregate.RootEntity.QuizCardsCollection.Last().IsCorrect)
+                    quizAggregate.CorrectlyAnsweredCards.ToList().Add(quizAggregate.CurrentCard);
+                else quizAggregate.IncorrectlyAnsweredCards.ToList().Add(quizAggregate.CurrentCard);
+
+                using var transaction = await connection.BeginTransactionAsync();
+                query = "INSERT INTO QuizCards (IdQuiz,IdCard,IsCorrect) VALUES (@IdQuiz,@IdCard,@IsCorrect); ";
+                await transaction.ExecuteAsync(query, new { IdQuiz = quizAggregate.RootEntity.Id, IdCard = quizAggregate.RootEntity.QuizCardsCollection.Last().CardId, IsCorrect = quizAggregate.RootEntity.QuizCardsCollection.Last().IsCorrect ? "Correct" : "Incorrect" });
+                
+                // Mettre à jour la table Quiz (dateModification, currentCardId,TotalScore,CurrentState)
+                query = "UPDATE Quiz Set CurrentCardId =@CurrentCardId, LastModification=GetDate(), TotalScore=@TotalScore; ";
+                await transaction.ExecuteAsync(query, new { CurrentCardId = quizAggregate.CurrentCard.Id, TotalScore = quizAggregate.RootEntity.QuizCardsCollection.Last().IsCorrect ? quizAggregate.RootEntity.TotalScore++: quizAggregate.RootEntity.TotalScore });
+
+                query = "UPDATE Paquet Set LastQuiz =GetDate(); ";
+                await transaction.ExecuteAsync(query);
+
+                query = "UPDATE Carte Set LastQuiz =GetDate(),Score=@Score; ";
+                await transaction.ExecuteAsync(query, new { Score = quizAggregate.RootEntity.QuizCardsCollection.Last().IsCorrect ? quizAggregate.CurrentCard.Score++ : quizAggregate.CurrentCard.Score });
+               
+                await transaction.CommitAsync();
 
             }
-            else 
-            {
-                // Ajouter une quizCard (celle répondue)
-                // Mettre à jour la table Quiz (dateModification, currentCardId,TotalScore,CurrentState)
-
-                // Insert QuizCard depuis la collection AddedQuizCards
-                // foreach 
-
                 //Mettre à jours le paquet
                 //Date du dernier quiz
 
                 //Mettre à jours les cartes depuis answeredCard collection
                 // via transaction applicatif
                 //foreach 
-            }
-
+                //}
         }
     }
 }

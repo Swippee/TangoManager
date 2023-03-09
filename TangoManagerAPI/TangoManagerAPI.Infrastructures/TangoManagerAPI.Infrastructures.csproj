@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dapper.Transaction" Version="2.0.123" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.0" />
   </ItemGroup>
 
