@@ -1,4 +1,5 @@
-﻿using TangoManagerAPI.Entities.Events.QuizAggregateEvents;
+﻿using TangoManagerAPI.Entities.Events;
+using TangoManagerAPI.Entities.Events.QuizAggregateEvents;
 using TangoManagerAPI.Entities.Ports.Handlers;
 
 namespace TangoManagerAPI.Infrastructures.Handlers

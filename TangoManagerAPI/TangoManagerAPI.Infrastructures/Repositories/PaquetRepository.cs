@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,7 +42,7 @@ namespace TangoManagerAPI.Infrastructures.Repositories
         /// </summary>
         /// <param name="name">nom du Paquet</param>
         /// <returns></returns>
-        public async Task<PaquetEntity> GetPaquetByNameAsync(string name)
+        public async Task<PacketAggregate> GetPacketByNameAsync(string name)
         {
             await using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
 
@@ -55,7 +56,9 @@ namespace TangoManagerAPI.Infrastructures.Repositories
 
             packetEntity.CardsCollection = cardEntities.ToList();
 
-            return packetEntity;
+            var packetAggregate = new PacketAggregate(packetEntity);
+
+            return packetAggregate;
         }
 
         /// <summary>
@@ -120,6 +123,79 @@ namespace TangoManagerAPI.Infrastructures.Repositories
 
         }
 
+        public async Task SavePacketAsync(PacketAggregate packetAggregate)
+        {
+            await using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
+            await connection.OpenAsync();
+            await using var sqlTran = (SqlTransaction)await connection.BeginTransactionAsync(IsolationLevel.Serializable);
 
+            const string packetQuery = @"
+              BEGIN
+                IF NOT EXISTS (SELECT TOP 1 Name FROM PAQUET WHERE NOM=@PacketName)
+                    BEGIN
+                        INSERT INTO PAQUET (Name,Description,LastModification,LastQuiz) Values (@Name,@Description,@LastModification,NULL)
+                    END
+                ELSE
+                    BEGIN
+                        UPDATE PAQUET SET 
+                        Name=@Name,
+                        Description=@Description,
+                        LastModification=@LastModification,
+                        LastQuiz=@LastQuiz
+                        WHERE Name=@Name
+                    END
+              END";
+
+            await using var packetCmd = new SqlCommand(packetQuery, connection, sqlTran);
+            packetCmd.Parameters.AddWithValue("@Name", packetAggregate.RootEntity.Name);
+            packetCmd.Parameters.AddWithValue("@Description", packetAggregate.RootEntity.Description);
+            packetCmd.Parameters.AddWithValue("@LastModification", packetAggregate.RootEntity.LastModification);
+            packetCmd.Parameters.Add(new SqlParameter("@LastQuiz", SqlDbType.DateTime)
+            {
+                Value = packetAggregate.RootEntity.LastQuiz ?? SqlDateTime.Null,
+                IsNullable = true
+            });
+
+            const string insertCardQuery =
+                @"BEGIN
+                    INSERT INTO CARTE (PacketName, Question, Answer, Score, LastModification, LastQuiz)
+                    VALUES (@PacketName, @Question, @Answer, @Score, @LastModification, @LastQuiz)
+                    SELECT SCOPE_IDENTITY();
+                END";
+
+            await using var cardsCmd = new SqlCommand(insertCardQuery, connection, sqlTran);
+            cardsCmd.Parameters.Add(new SqlParameter("@PacketName", SqlDbType.VarChar));
+            cardsCmd.Parameters.Add(new SqlParameter("@Question", SqlDbType.VarChar));
+            cardsCmd.Parameters.Add(new SqlParameter("@Answer", SqlDbType.VarChar));
+            cardsCmd.Parameters.Add(new SqlParameter("@Score", SqlDbType.Decimal));
+            cardsCmd.Parameters.Add(new SqlParameter("@LastModification", SqlDbType.DateTime));
+            cardsCmd.Parameters.Add(new SqlParameter("@LastQuiz", SqlDbType.DateTime) { IsNullable = true });
+
+            try 
+            {
+                await packetCmd.ExecuteNonQueryAsync();
+
+                foreach (var addedCard in packetAggregate.AddedCards)
+                {
+                    cardsCmd.Parameters["@PacketName"].Value = addedCard.PacketName;
+                    cardsCmd.Parameters["@Question"].Value = addedCard.Question;
+                    cardsCmd.Parameters["@Answer"].Value = addedCard.Answer;
+                    cardsCmd.Parameters["@Score"].Value = addedCard.Score;
+                    cardsCmd.Parameters["@LastModification"].Value = addedCard.LastModification;
+                    cardsCmd.Parameters["@LastQuiz"].Value = addedCard.LastQuiz ?? SqlDateTime.Null;
+
+                    var cardId = (int)(await cardsCmd.ExecuteScalarAsync())!;
+                    addedCard.Id = cardId;
+                }
+
+                sqlTran.Commit();
+            }
+            catch (Exception ex)
+            {
+                await Console.Error.WriteLineAsync(ex.ToString());
+                sqlTran.Rollback();
+                throw;
+            }
+        }
     }
 }

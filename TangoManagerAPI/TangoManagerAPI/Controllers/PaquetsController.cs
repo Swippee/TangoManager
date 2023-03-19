@@ -1,8 +1,5 @@
-﻿using Dapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using System.Data.SqlClient;
+﻿using Microsoft.AspNetCore.Mvc;
+using TangoManagerAPI.Entities.Commands.CommandsPaquet;
 using TangoManagerAPI.Entities.Ports.Exceptions;
 using TangoManagerAPI.Entities.Ports.Routers;
 using TangoManagerAPI.Entities.Queries;
@@ -66,10 +63,12 @@ namespace TangoManagerAPI.Controllers
         //    return Ok(new { Success = true });
         //}
         private readonly IQueryRouter _queryRouter;
+        private readonly ICommandRouter _commandRouter;
 
-        public PaquetsController(IQueryRouter queryRouter)
+        public PaquetsController(IQueryRouter queryRouter, ICommandRouter commandRouter)
         {
             _queryRouter = queryRouter;
+            _commandRouter = commandRouter;
         }
 
         [HttpGet]
@@ -92,7 +91,23 @@ namespace TangoManagerAPI.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("")]
+        [Route("Index")]
+        public async Task<ActionResult> CreateAsync([FromBody] CreatePaquetCommand createPacketCommand)
+        {
+            var packetAggregate = await createPacketCommand.ExecuteAsync(_commandRouter);
 
+            return StatusCode(200, packetAggregate.RootEntity);
+        }
 
+        [HttpPut]
+        [Route("{packetName}")]
+        public async Task<ActionResult> AddCardAsync([FromRoute] string packetName, [FromBody] AddCardToPacketCommand addCardToPacketCommand)
+        {
+            var packetAggregate = await addCardToPacketCommand.ExecuteAsync(_commandRouter);
+
+            return StatusCode(200, packetAggregate.RootEntity);
+        }
     }
 }

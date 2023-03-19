@@ -34,8 +34,8 @@ namespace TangoManagerAPI.Entities.Models
 
         public int Id { get; set; }
         public string PacketName { get; set; }
-        public string Question { get; set; } = string.Empty;
-        public string Answer { get; set; } = string.Empty;
+        public string Question { get; set; }
+        public string Answer { get; set; }
         public decimal Score { get; set; }
 
         public DateTime LastModification { get; set; }
@@ -57,12 +57,12 @@ namespace TangoManagerAPI.Entities.Models
 
         public override bool Equals(object obj)
         {
-            return obj is CarteEntity entity && entity.Id == Id;
+            return obj is CarteEntity entity && entity.Id == Id && string.Equals(entity.Question, Question, StringComparison.OrdinalIgnoreCase);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Id);
+            return HashCode.Combine(Id, Question);
         }
     }
 }

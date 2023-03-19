@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using TangoManagerAPI.Entities.Events;
 using TangoManagerAPI.Entities.Events.QuizAggregateEvents;
 
 namespace TangoManagerAPI.Entities.Models

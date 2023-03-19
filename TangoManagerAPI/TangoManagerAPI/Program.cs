@@ -1,5 +1,10 @@
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Text.Json.Serialization;
 using TangoManagerAPI.Entities.Commands.CommandsPaquet;
 using TangoManagerAPI.Entities.Commands.CommandsQuiz;
+using TangoManagerAPI.Entities.Events;
 using TangoManagerAPI.Entities.Events.QuizAggregateEvents;
 using TangoManagerAPI.Entities.Ports.Repositories;
 using TangoManagerAPI.Entities.Ports.Routers;
@@ -45,6 +50,7 @@ builder.Services.AddSingleton<ICommandRouter>(p => {
     commandRouter.AddCommandHandler<CreatePaquetCommand>(handler);
     commandRouter.AddCommandHandler<CreateQuizCommand>(handler);
     commandRouter.AddCommandHandler<AnswerQuizCommand>(handler);
+    commandRouter.AddCommandHandler<AddCardToPacketCommand>(handler);
 
     return commandRouter;
 });
@@ -63,18 +69,31 @@ builder.Services.AddSingleton<IEventRouter>(p => {
 });
 
 
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+var swaggerOptions = app.Services.GetRequiredService<IOptions<SwaggerGenOptions>>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+
+    app.UseSwaggerUI(c =>
+    {
+        foreach (var (name, _) in swaggerOptions.Value.SwaggerGeneratorOptions.SwaggerDocs)
+        {
+            c.SwaggerEndpoint($"/swagger/{name}/swagger.json", name);
+        }
+    });
 }
 
 app.UseHttpsRedirection();
@@ -82,5 +101,6 @@ app.UseCors("CorsPolicy");
 //app.UseAuthorization();
 
 app.MapControllers();
+app.MapSwagger("swagger/{documentName}/swagger.json");
 
 app.Run();

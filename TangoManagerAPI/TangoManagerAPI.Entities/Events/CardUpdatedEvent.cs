@@ -1,11 +1,11 @@
 ﻿using TangoManagerAPI.Entities.Models;
 using TangoManagerAPI.Entities.Ports.Routers;
 
-namespace TangoManagerAPI.Entities.Events.QuizAggregateEvents
+namespace TangoManagerAPI.Entities.Events
 {
-    public sealed class PacketUpdatedEvent : AEvent<PaquetEntity>
+    public sealed class CardUpdatedEvent : AEvent<CarteEntity>
     {
-        public PacketUpdatedEvent(PaquetEntity data) : base(data.Clone())
+        public CardUpdatedEvent(CarteEntity data) : base(data.Clone())
         {
 
         }
