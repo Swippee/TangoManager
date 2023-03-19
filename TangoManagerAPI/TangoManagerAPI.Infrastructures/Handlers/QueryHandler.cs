@@ -24,7 +24,7 @@ namespace TangoManagerAPI.Infrastructures.Handlers
 
         public async Task<IEnumerable<PaquetEntity>> HandleAsync(GetAllPaquetsQuery query, CancellationToken token = default)
         {
-            return await _paquetRepository.GetPaquetsAsync();
+            return await _paquetRepository.GetPacketsAsync();
         }
     }
 }

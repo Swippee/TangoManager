@@ -1,13 +1,11 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
-using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlTypes;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TangoManagerAPI.Entities.Models;
 using TangoManagerAPI.Entities.Ports.Repositories;
@@ -25,7 +23,7 @@ namespace TangoManagerAPI.Infrastructures.Repositories
         /// Requete pour ramener tous les paquets dans une liste
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<PaquetEntity>> GetPaquetsAsync()
+        public async Task<IEnumerable<PaquetEntity>> GetPacketsAsync()
         {
 
             using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
@@ -61,68 +59,7 @@ namespace TangoManagerAPI.Infrastructures.Repositories
             return packetAggregate;
         }
 
-        /// <summary>
-        /// Méthode pour créer un paquet
-        /// </summary>
-        /// <param name="paquet"></param>
-        public async Task AddPaquetAsync(PaquetEntity paquet)
-        {
-
-            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
-            {
-                await connection.OpenAsync();
-                var query = "Insert into Paquet (Name,Description,Score,LastModification,LastQuiz) Values (@Nom,@Description,NULL,GetDate(),NULL)";
-                await connection.ExecuteAsync(query, paquet);
-            }
-
-        }
-        /// <summary>
-        /// Méthode pour mettre à jours la description d'un paquet
-        /// </summary>
-        /// <param name="paquet"></param>
-        public async Task UpdatePaquetAsync(PaquetEntity paquet)
-        {
-
-            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
-            {
-                await connection.OpenAsync();
-                var query = "Update Paquet Set Description=@Description Where Nom=@Nom";
-                await connection.ExecuteAsync(query, paquet);
-            }
-
-        }
-
-        /// <summary>
-        /// Méthode pour créer un paquet
-        /// </summary>
-        /// <param name="paquet"></param>
-        public async Task RemovePaquetAsync(string name)
-        {
-
-            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
-            {
-                await connection.OpenAsync();
-                var query = "Delete from Paquet WHERE Nom =@name";
-                await connection.ExecuteAsync(query, new { name });
-            }
-
-        }
-        /// <summary>
-        /// Méthode pour créer un paquet
-        /// </summary>
-        /// <param name="paquet"></param>
-        public  List<PaquetEntity> TestList()
-        {
-
-            using (SqlConnection connection = new(_config.GetConnectionString("DefaultConnection")))
-            {
-                var query = "select * from Paquet";
-                var allTransaction =  connection.Query<PaquetEntity>(query);
-                return allTransaction.ToList();
-            }
-
-        }
-
+        
         public async Task SavePacketAsync(PacketAggregate packetAggregate)
         {
             await using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));

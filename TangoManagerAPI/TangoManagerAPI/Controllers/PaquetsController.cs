@@ -22,7 +22,7 @@ namespace TangoManagerAPI.Controllers
         //[HttpGet]
         //public async Task<ActionResult<List<PaquetEntity>>> GetAllPaquet()
         //{
-        //    var paquets = await _paquetReadRepository.GetPaquetsAsync();
+        //    var paquets = await _paquetReadRepository.GetPacketsAsync();
         //    return Ok(paquets.OrderBy(x => x.Nom).ToList());
         //}
 
