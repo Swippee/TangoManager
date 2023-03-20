@@ -68,7 +68,7 @@ namespace TangoManagerAPI.Infrastructures.Repositories
 
             const string packetQuery = @"
               BEGIN
-                IF NOT EXISTS (SELECT TOP 1 Name FROM PAQUET WHERE NOM=@PacketName)
+                IF NOT EXISTS (SELECT TOP 1 Name FROM PAQUET WHERE Name=@PacketName)
                     BEGIN
                         INSERT INTO PAQUET (Name,Description,LastModification,LastQuiz) Values (@Name,@Description,@LastModification,NULL)
                     END
