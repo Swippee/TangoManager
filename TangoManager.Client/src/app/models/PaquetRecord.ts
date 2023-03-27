@@ -1,7 +1,9 @@
-export interface PaquetRecord{
-    Nom: String;
-    Description : String;
-    Score: number;
-    DateCreation : String;
-    DateDernierQuiz: String;
+import { CardsRecord } from "./CardsRecord";
+
+export interface PaquetRecord {
+    name: String;
+    description : String;
+    lastModification : String;
+    lastQuiz: Date;
+    cardsCollection: CardsRecord[];
 }

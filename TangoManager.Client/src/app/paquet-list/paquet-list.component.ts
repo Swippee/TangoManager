@@ -1,59 +1,40 @@
 import { Component, OnInit } from '@angular/core';
 import { PaquetService } from '../paquet.service';
 import { PaquetRecord } from '../models/PaquetRecord';
+import * as moment  from 'node_modules/moment/moment.js';
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-paquet-list',
   templateUrl: './paquet-list.component.html',
   styleUrls: ['./paquet-list.component.css']
 })
-export class PaquetListComponent {
+export class PaquetListComponent  {
   records:PaquetRecord[]=[];
-  record:PaquetRecord | undefined;
   canDisplayData=false;
-constructor(private paquetService: PaquetService){}
-ngOnInit():void{
+ 
+constructor(
+  private paquetService: PaquetService,
+  private router: Router 
+  ){}
+ngOnInit():void {
+   
    this.getAllRecords();
-  // this.getAllRecordsB();
-  //this.getRecordByName();
   
 }
 
   getAllRecords() {
+    var date = moment();
       this.paquetService.getRecords().subscribe((data) => {
       this.canDisplayData = true;
       this.records = data as PaquetRecord[];
-      console.log(data);
-      console.log(this.records);
-      console.log(this.records[0]);
-      console.log(this.records[0].Nom);
+
+      this.records.forEach(record => {
+        record.lastModification=moment(record.lastModification as moment.MomentInput).format('YYYY/D/M');
+      });
     })
-    console.log("Sortie");
   }
-  getAllRecordsB() {
-    this.paquetService.getRecordsB().subscribe({
-      next:(records) =>{
-        console.log(records);
-        console.log(records[0]);
-        console.log(records[0].Description);
-      },
-      error:(response)=>{
-        console.log(response);
-      },
-      
-    })
-  console.log("Sortie");
-  }
-  getRecordByName() {
-    this.paquetService.getRecordC().subscribe({
-      next:(record) =>{
-        console.log(record);   
-        console.log(record.Nom);             
-      },
-      error:(response)=>{
-        console.log(response);
-      },
-      
-    })
-  console.log("Sortie");
+  goToCreatePaquet(){
+    this.router.navigate(['/','paquet-form']);
   }
 }

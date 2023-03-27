@@ -50,6 +50,8 @@ namespace TangoManagerAPI.Infrastructures.Repositories
             const string packetQuery = "select * from Paquet WHERE Name=@Name";
             var packetEntity = await connection.QueryFirstOrDefaultAsync<PaquetEntity>(packetQuery, new { Name = name });
 
+            if (packetEntity == null) return null;
+
             const string cardsQuery = "select * from Carte WHERE PacketName=@Name";
             var cardEntities = await connection.QueryAsync<CarteEntity>(cardsQuery, new { Name = name });
 
@@ -68,7 +70,7 @@ namespace TangoManagerAPI.Infrastructures.Repositories
             using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
             {
                 await connection.OpenAsync();
-                var query = "Insert into Paquet (Name,Description,Score,LastModification,LastQuiz) Values (@Nom,@Description,NULL,GetDate(),NULL)";
+                var query = "Insert into Paquet (Name,Description,LastModification,LastQuiz) Values (@Name,@Description,GetDate(),NULL)";
                 await connection.ExecuteAsync(query, paquet);
             }
 
@@ -83,7 +85,7 @@ namespace TangoManagerAPI.Infrastructures.Repositories
             using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
             {
                 await connection.OpenAsync();
-                var query = "Update Paquet Set Description=@Description Where Nom=@Nom";
+                var query = "Update Paquet Set Description=@Description Where Name=@Name";
                 await connection.ExecuteAsync(query, paquet);
             }
 
@@ -99,7 +101,7 @@ namespace TangoManagerAPI.Infrastructures.Repositories
             using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
             {
                 await connection.OpenAsync();
-                var query = "Delete from Paquet WHERE Nom =@name";
+                var query = "Delete from Paquet WHERE Name =@name";
                 await connection.ExecuteAsync(query, new { name });
             }
 

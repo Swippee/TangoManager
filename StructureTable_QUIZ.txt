@@ -6,4 +6,7 @@ Table QuizzCards
 
 IdQuiz - CardId - IsCorrect 
 QUIZ1   CARTE1    true		
- 		
+ 		{
+"QuizId":1,
+"Answer":"Mamiphere"
+}

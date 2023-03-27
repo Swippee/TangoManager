@@ -3,9 +3,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
+using TangoManagerAPI.Entities.Commands.CommandsPaquet;
+using TangoManagerAPI.Entities.Commands.CommandsQuiz;
 using TangoManagerAPI.Entities.Ports.Exceptions;
 using TangoManagerAPI.Entities.Ports.Routers;
 using TangoManagerAPI.Entities.Queries;
+using TangoManagerAPI.Infrastructures.Routers;
 
 namespace TangoManagerAPI.Controllers
 {
@@ -66,15 +69,17 @@ namespace TangoManagerAPI.Controllers
         //    return Ok(new { Success = true });
         //}
         private readonly IQueryRouter _queryRouter;
+        private readonly ICommandRouter _commandRouter;
 
-        public PaquetsController(IQueryRouter queryRouter)
+        public PaquetsController(IQueryRouter queryRouter, ICommandRouter commandRouter)
         {
             _queryRouter = queryRouter;
+            _commandRouter = commandRouter;
         }
 
         [HttpGet]
-        [Route("")]
-        [Route("Index")]
+        //[Route("")]
+        //[Route("Index")]
         public async Task<ActionResult> IndexAsync()
         {
             try
@@ -93,6 +98,16 @@ namespace TangoManagerAPI.Controllers
         }
 
 
+     
+        [HttpPost]
+     
+        public async Task<ActionResult> CreateAsync([FromBody] CreatePaquetCommand createPaquetCommand)
+        {
+            var paquet = await createPaquetCommand.ExecuteAsync(_commandRouter);
+
+            return StatusCode(200, paquet);
+            
+        }
 
     }
 }
