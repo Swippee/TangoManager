@@ -106,22 +106,22 @@ namespace TangoManagerAPI.Infrastructures.Repositories
             }
 
         }
+
         /// <summary>
-        /// Méthode pour créer un paquet
+        /// Méthode pour créer une carte
         /// </summary>
         /// <param name="paquet"></param>
-        public  List<PaquetEntity> TestList()
+        public async Task AddCardAsync(CarteEntity card)
         {
 
-            using (SqlConnection connection = new(_config.GetConnectionString("DefaultConnection")))
+            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
             {
-                var query = "select * from Paquet";
-                var allTransaction =  connection.Query<PaquetEntity>(query);
-                return allTransaction.ToList();
+                await connection.OpenAsync();
+                var query = "Insert into Carte (PacketName,Question,Answer,Score,LastModification,LastQuiz) Values (@PacketName,@Question,@Answer,0,GetDate(),NULL)";
+                await connection.ExecuteAsync(query, card);
             }
 
         }
-
 
     }
 }

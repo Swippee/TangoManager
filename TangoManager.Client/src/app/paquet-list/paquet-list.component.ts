@@ -25,7 +25,7 @@ ngOnInit():void {
 
   getAllRecords() {
     var date = moment();
-      this.paquetService.getRecords().subscribe((data) => {
+      this.paquetService.getPaquetRecords().subscribe((data) => {
       this.canDisplayData = true;
       this.records = data as PaquetRecord[];
 

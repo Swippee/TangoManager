@@ -1,3 +1,4 @@
+using TangoManagerAPI.Entities.Commands.CommandsCard;
 using TangoManagerAPI.Entities.Commands.CommandsPaquet;
 using TangoManagerAPI.Entities.Commands.CommandsQuiz;
 using TangoManagerAPI.Entities.Events.QuizAggregateEvents;
@@ -46,6 +47,7 @@ builder.Services.AddSingleton<ICommandRouter>(p => {
     var handler = p.GetRequiredService<CommandHandler>();
 
     commandRouter.AddCommandHandler<CreatePaquetCommand>(handler);
+    commandRouter.AddCommandHandler<CreateCardCommand>(handler);
     commandRouter.AddCommandHandler<CreateQuizCommand>(handler);
     commandRouter.AddCommandHandler<AnswerQuizCommand>(handler);
 

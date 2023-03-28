@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Data.SqlClient;
+using TangoManagerAPI.Entities.Commands.CommandsCard;
 using TangoManagerAPI.Entities.Commands.CommandsPaquet;
 using TangoManagerAPI.Entities.Commands.CommandsQuiz;
 using TangoManagerAPI.Entities.Ports.Exceptions;
@@ -100,7 +101,6 @@ namespace TangoManagerAPI.Controllers
 
      
         [HttpPost]
-     
         public async Task<ActionResult> CreateAsync([FromBody] CreatePaquetCommand createPaquetCommand)
         {
             var paquet = await createPaquetCommand.ExecuteAsync(_commandRouter);
@@ -109,5 +109,14 @@ namespace TangoManagerAPI.Controllers
             
         }
 
+        [HttpPost]
+        [Route("Card")]
+        public async Task<ActionResult> CreateAsync([FromBody] CreateCardCommand createCardCommand)
+        {
+            var card = await createCardCommand.ExecuteAsync(_commandRouter);
+
+            return StatusCode(200, card);
+
+        }
     }
 }

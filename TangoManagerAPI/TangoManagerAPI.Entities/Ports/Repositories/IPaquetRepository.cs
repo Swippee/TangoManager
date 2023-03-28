@@ -10,4 +10,5 @@ public interface IPaquetRepository
     Task RemovePaquetAsync(string name);
     Task<IEnumerable<PaquetEntity>> GetPaquetsAsync();
     Task<PaquetEntity> GetPaquetByNameAsync(string name);
+    Task AddCardAsync(CarteEntity card);
 }

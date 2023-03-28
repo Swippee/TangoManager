@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PaquetService } from '../paquet.service';
-import { Router } from '@angular/router';
+import { Router,ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-paquet-form',
   templateUrl: './paquet-form.component.html',
@@ -28,7 +28,7 @@ get registerFormControl():{[key: string]:AbstractControl}{
   return this.addRecordPaquet.controls;
 }
 onSubmit(){
-this.paquetService.addRecord(this.addRecordPaquet.value).subscribe((res)=>{
+this.paquetService.addRecordPaquet(this.addRecordPaquet.value).subscribe((res)=>{
   console.log(res);
   this.emptyForm();
   this.router.navigate(['/paquet-list']);

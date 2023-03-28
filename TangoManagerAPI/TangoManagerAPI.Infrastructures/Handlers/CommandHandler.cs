@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using TangoManagerAPI.Entities.Commands.CommandsCard;
 using TangoManagerAPI.Entities.Commands.CommandsPaquet;
 using TangoManagerAPI.Entities.Commands.CommandsQuiz;
 using TangoManagerAPI.Entities.Exceptions;
@@ -12,8 +13,10 @@ namespace TangoManagerAPI.Infrastructures.Handlers
 {
     public class CommandHandler :
         ICommandHandler<PaquetEntity, CreatePaquetCommand>,
+        ICommandHandler<CarteEntity, CreateCardCommand>,
         ICommandHandler<QuizAggregate, AnswerQuizCommand>,
         ICommandHandler<QuizAggregate, CreateQuizCommand>
+
     {
         private readonly IPaquetRepository _paquetRepository;
         private readonly IEventRouter _eventRouter;
@@ -75,6 +78,27 @@ namespace TangoManagerAPI.Infrastructures.Handlers
             await _quizRepository.SaveQuizAsync(quizAggregate);
 
             return quizAggregate;
+        }
+
+        public async Task<CarteEntity> HandleAsync(CreateCardCommand command)
+        {
+
+            var paquetEntity = await _paquetRepository.GetPaquetByNameAsync(command.PacketName);
+
+            if (paquetEntity == null)
+            {
+                throw new EntityDoNotExistException($"PacketName with name {command.PacketName} do not exists, cannot add a card to the packet if packet do not exist.");
+            }
+
+            var cardEntity = new CarteEntity
+            {
+                PacketName = command.PacketName,
+                Question = command.Question,
+                Answer= command.Answer,
+            };
+
+            await _paquetRepository.AddCardAsync(cardEntity);
+            return cardEntity;
         }
     }
 }
