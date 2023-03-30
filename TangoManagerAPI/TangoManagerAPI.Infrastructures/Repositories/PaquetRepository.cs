@@ -40,7 +40,7 @@ namespace TangoManagerAPI.Infrastructures.Repositories
         /// </summary>
         /// <param name="name">nom du Paquet</param>
         /// <returns></returns>
-        public async Task<PacketAggregate> GetPacketByNameAsync(string name)
+        public async Task<PacketAggregate?> GetPacketByNameAsync(string name)
         {
             await using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
 
@@ -49,6 +49,7 @@ namespace TangoManagerAPI.Infrastructures.Repositories
             const string packetQuery = "select * from Paquet WHERE Name=@Name";
             var packetEntity = await connection.QueryFirstOrDefaultAsync<PaquetEntity>(packetQuery, new { Name = name });
 
+            if(packetEntity == null) return null; 
             const string cardsQuery = "select * from Carte WHERE PacketName=@Name";
             var cardEntities = await connection.QueryAsync<CarteEntity>(cardsQuery, new { Name = name });
 
@@ -68,7 +69,7 @@ namespace TangoManagerAPI.Infrastructures.Repositories
 
             const string packetQuery = @"
               BEGIN
-                IF NOT EXISTS (SELECT TOP 1 Name FROM PAQUET WHERE Name=@PacketName)
+                IF NOT EXISTS (SELECT TOP 1 Name FROM PAQUET WHERE Name=@Name)
                     BEGIN
                         INSERT INTO PAQUET (Name,Description,LastModification,LastQuiz) Values (@Name,@Description,@LastModification,NULL)
                     END
@@ -121,7 +122,10 @@ namespace TangoManagerAPI.Infrastructures.Repositories
                     cardsCmd.Parameters["@LastModification"].Value = addedCard.LastModification;
                     cardsCmd.Parameters["@LastQuiz"].Value = addedCard.LastQuiz ?? SqlDateTime.Null;
 
-                    var cardId = (int)(await cardsCmd.ExecuteScalarAsync())!;
+                    var cardIdTemp = await cardsCmd.ExecuteScalarAsync();
+                    if (cardIdTemp == null)
+                        throw new Exception("Error while returning ID of Card");
+                    var cardId = Convert.ToInt32(cardIdTemp);
                     addedCard.Id = cardId;
                 }
 

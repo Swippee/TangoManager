@@ -24,9 +24,9 @@ namespace TangoManagerAPI.Entities.Models
 
         public IEnumerable<AEvent> AddCard(CarteEntity cardEntity)
         {
-            var existingCard = RootEntity.CardsCollection.FirstOrDefault(x => x.Equals(cardEntity));
+            var existingCard = RootEntity.CardsCollection.FirstOrDefault(x => string.Equals(cardEntity.Question.Trim(),x.Question.Trim(),StringComparison.OrdinalIgnoreCase));
             if (existingCard != null) 
-               throw new CardAlreadyExistsInPacketException($"Card {cardEntity.Id} - {cardEntity.Question} already exists in packet {RootEntity.Name}!");
+               throw new CardAlreadyExistsInPacketException($"Card {cardEntity.Question} already exists in packet {RootEntity.Name}!");
 
             _addedCardsCollection.Add(cardEntity);
             RootEntity.CardsCollection.Add(cardEntity);

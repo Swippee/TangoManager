@@ -5,9 +5,11 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 using TangoManagerAPI.Entities.Exceptions;
 using TangoManagerAPI.Entities.Models;
 using TangoManagerAPI.Entities.Ports.Repositories;
@@ -77,31 +79,80 @@ namespace TangoManagerAPI.Infrastructures.Repositories
             string query = "";
             if (quizAggregate.RootEntity.Id == null)
             {
-                // Faire le cas nouveau dans une transaction SQL
-                // Ajouter dans les tables Quizz le nouveau Quizz, dans la table QUIzzCard toutes les cartes
-                query = "Insert into ";
-                // step a :
-                // Insertion quiz
-                // step b
-                var quizId = await connection.ExecuteScalarAsync<int>(query);
+
+                query = "INSERT INTO Quiz (PacketName,CurrentCardId,CurrentState,CreationDate,LastModification,TotalScore) VALUES (@PacketName,@CurrentCardId,@CurrentState,GetDate(),GetDate(),0); " +
+                "SELECT CAST(SCOPE_IDENTITY() as int)";
+
+                var quizId = await connection.ExecuteScalarAsync<int>(query, new { PacketName = quizAggregate.PacketEntity.Name, CurrentCardId = quizAggregate.CurrentCard.Id,CurrentState=quizAggregate.CurrentState.ToString() });
                 quizAggregate.RootEntity.Id = quizId;
 
 
             }
-            else 
+            else
             {
                 // Ajouter une quizCard (celle répondue)
-                // Mettre à jour la table Quiz (dateModification, currentCardId,TotalScore,CurrentState)
+                //{ TRANSACTION    APPLICATIVE 
 
-                // Insert QuizCard depuis la collection AddedQuizCards
-                // foreach 
 
-                //Mettre à jours le paquet
-                //Date du dernier quiz
+                // Ajouter une quizCard (celle répondue) à la collection
 
-                //Mettre à jours les cartes depuis answeredCard collection
-                // via transaction applicatif
-                //foreach 
+
+               await using var sqlTran = (SqlTransaction)await connection.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+
+              const string  quizQuery = @"
+                       UPDATE Quiz 
+                       Set CurrentCardId =@CurrentCardId,
+                       CurrentState = @CurrentState,
+                       LastModification=@LastModification, 
+                       TotalScore=@TotalScore; 
+              ";
+
+             
+
+                    await using var quizCmd = new SqlCommand(quizQuery, connection, sqlTran);
+                quizCmd.Parameters.AddWithValue("@CurrentCardId", quizAggregate.RootEntity.CurrentCardId);
+                quizCmd.Parameters.AddWithValue("@CurrentState", quizAggregate.RootEntity.CurrentState.ToString());
+                quizCmd.Parameters.AddWithValue("@TotalScore", quizAggregate.RootEntity.TotalScore);
+                quizCmd.Parameters.Add(new SqlParameter("@LastModification", SqlDbType.DateTime)
+                    {
+                        Value = quizAggregate.RootEntity.LastModification ?? SqlDateTime.Null,
+                        IsNullable = true
+                    });
+
+                    const string insertQuizCardQuery =
+                    @"BEGIN
+                      INSERT INTO QuizCards (IdQuiz, IdCard, IsCorrect)
+                      VALUES (@IdQuiz, @IdCard, @IsCorrect)
+                     END";
+
+                    await using var quizCardsCmd = new SqlCommand(insertQuizCardQuery, connection, sqlTran);
+                quizCardsCmd.Parameters.Add(new SqlParameter("@IdQuiz", SqlDbType.Int));
+                quizCardsCmd.Parameters.Add(new SqlParameter("@IdCard", SqlDbType.Int));
+                quizCardsCmd.Parameters.Add(new SqlParameter("@IsCorrect", SqlDbType.Bit));
+
+                try
+                {
+                    await quizCmd.ExecuteNonQueryAsync();
+
+                    quizCardsCmd.Parameters["@IdQuiz"].Value = quizAggregate.RootEntity.Id;
+                    quizCardsCmd.Parameters["@IdCard"].Value = quizAggregate.RootEntity.CurrentCardId;
+                    quizCardsCmd.Parameters["@IsCorrect"].Value = quizAggregate.RootEntity.QuizCardsCollection.Where(x=>x.CardId== quizAggregate.RootEntity.CurrentCardId).Select(y=>y.IsCorrect).FirstOrDefault();
+                    
+
+                     await quizCardsCmd.ExecuteNonQueryAsync();
+                        
+                    sqlTran.Commit();
+                    
+                    
+
+                }
+                catch (Exception ex)
+                {
+                    await Console.Error.WriteLineAsync(ex.ToString());
+                    sqlTran.Rollback();
+                    throw;
+                }
+
             }
 
         }

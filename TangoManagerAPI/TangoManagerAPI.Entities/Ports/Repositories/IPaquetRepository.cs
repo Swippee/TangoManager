@@ -7,6 +7,6 @@ namespace TangoManagerAPI.Entities.Ports.Repositories;
 public interface IPaquetRepository
 {
     Task<IEnumerable<PaquetEntity>> GetPacketsAsync();
-    Task<PacketAggregate> GetPacketByNameAsync(string packetName);
+    Task<PacketAggregate?> GetPacketByNameAsync(string packetName);
     Task SavePacketAsync(PacketAggregate packetAggregate);
 }
