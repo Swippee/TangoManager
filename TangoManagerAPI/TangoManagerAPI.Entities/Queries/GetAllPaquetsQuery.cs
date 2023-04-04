@@ -7,9 +7,9 @@ using TangoManagerAPI.Entities.Ports.Routers;
 
 namespace TangoManagerAPI.Entities.Queries
 {
-    public sealed class GetAllPaquetsQuery : AQuery<IEnumerable<PaquetEntity>, GetAllPaquetsQuery>
+    public sealed class GetAllPaquetsQuery : AQuery<IEnumerable<PacketAggregate>, GetAllPaquetsQuery>
     {
-        public override async Task<IEnumerable<PaquetEntity>> QueryAsync(IQueryRouter queryRouter)
+        public override async Task<IEnumerable<PacketAggregate>> QueryAsync(IQueryRouter queryRouter)
         {
             return await queryRouter.RouteAsync(this);
         }

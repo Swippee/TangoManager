@@ -12,7 +12,7 @@ using TangoManagerAPI.Entities.Queries;
 namespace TangoManagerAPI.Infrastructures.Handlers
 {
     public class QueryHandler :
-       IQueryHandler<IEnumerable<PaquetEntity>, GetAllPaquetsQuery>
+       IQueryHandler<IEnumerable<PacketAggregate>, GetAllPaquetsQuery>
 
     {
         private readonly IPaquetRepository _paquetRepository;
@@ -22,7 +22,7 @@ namespace TangoManagerAPI.Infrastructures.Handlers
             _paquetRepository = paquetRepository;
         }
 
-        public async Task<IEnumerable<PaquetEntity>> HandleAsync(GetAllPaquetsQuery query, CancellationToken token = default)
+        public async Task<IEnumerable<PacketAggregate>> HandleAsync(GetAllPaquetsQuery query, CancellationToken token = default)
         {
             return await _paquetRepository.GetPacketsAsync();
         }

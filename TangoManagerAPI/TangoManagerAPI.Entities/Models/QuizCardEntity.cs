@@ -8,10 +8,10 @@ namespace TangoManagerAPI.Entities.Models
     [Serializable]
     public class QuizCardEntity : ICloneable<QuizCardEntity>
     {
-        public QuizCardEntity(int cardId, int quizId, bool isCorrect)
+        public QuizCardEntity(int idCard, int idQuiz, bool isCorrect)
         {
-            CardId = cardId;
-            QuizId = quizId;
+            IdCard = idCard;
+            IdQuiz = idQuiz;
             IsCorrect = isCorrect;
         }
 
@@ -20,8 +20,8 @@ namespace TangoManagerAPI.Entities.Models
 
         }
 
-        public int CardId { get; set; }
-        public int QuizId { get; set; }
+        public int IdCard { get; set; }
+        public int IdQuiz { get; set; }
         public bool IsCorrect { get; set; }
         public QuizCardEntity Clone()
         {

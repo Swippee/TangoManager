@@ -90,11 +90,6 @@ namespace TangoManagerAPI.Infrastructures.Repositories
             }
             else
             {
-                // Ajouter une quizCard (celle répondue)
-                //{ TRANSACTION    APPLICATIVE 
-
-
-                // Ajouter une quizCard (celle répondue) à la collection
 
 
                await using var sqlTran = (SqlTransaction)await connection.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
@@ -104,15 +99,15 @@ namespace TangoManagerAPI.Infrastructures.Repositories
                        Set CurrentCardId =@CurrentCardId,
                        CurrentState = @CurrentState,
                        LastModification=@LastModification, 
-                       TotalScore=@TotalScore; 
+                       TotalScore=@TotalScore 
+                       WHERE PacketName=@PacketName;
               ";
-
-             
 
                     await using var quizCmd = new SqlCommand(quizQuery, connection, sqlTran);
                 quizCmd.Parameters.AddWithValue("@CurrentCardId", quizAggregate.RootEntity.CurrentCardId);
                 quizCmd.Parameters.AddWithValue("@CurrentState", quizAggregate.RootEntity.CurrentState.ToString());
                 quizCmd.Parameters.AddWithValue("@TotalScore", quizAggregate.RootEntity.TotalScore);
+                quizCmd.Parameters.AddWithValue("@PacketName", quizAggregate.RootEntity.PacketName);
                 quizCmd.Parameters.Add(new SqlParameter("@LastModification", SqlDbType.DateTime)
                     {
                         Value = quizAggregate.RootEntity.LastModification ?? SqlDateTime.Null,
@@ -133,16 +128,16 @@ namespace TangoManagerAPI.Infrastructures.Repositories
                 try
                 {
                     await quizCmd.ExecuteNonQueryAsync();
-
-                    quizCardsCmd.Parameters["@IdQuiz"].Value = quizAggregate.RootEntity.Id;
-                    quizCardsCmd.Parameters["@IdCard"].Value = quizAggregate.RootEntity.CurrentCardId;
-                    quizCardsCmd.Parameters["@IsCorrect"].Value = quizAggregate.RootEntity.QuizCardsCollection.Where(x=>x.CardId== quizAggregate.RootEntity.CurrentCardId).Select(y=>y.IsCorrect).FirstOrDefault();
-                    
-
-                     await quizCardsCmd.ExecuteNonQueryAsync();
+                    foreach (var quizCard in quizAggregate.AddedQuizCards)
+                    {
+                        quizCardsCmd.Parameters["@IdQuiz"].Value = quizAggregate.RootEntity.Id;
+                        quizCardsCmd.Parameters["@IdCard"].Value = quizCard.IdCard;
+                        quizCardsCmd.Parameters["@IsCorrect"].Value = quizCard.IsCorrect;
+                        await quizCardsCmd.ExecuteNonQueryAsync();
+                    }
+                            
                         
                     sqlTran.Commit();
-                    
                     
 
                 }

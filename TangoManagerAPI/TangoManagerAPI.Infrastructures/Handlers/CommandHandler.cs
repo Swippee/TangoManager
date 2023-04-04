@@ -13,6 +13,7 @@ namespace TangoManagerAPI.Infrastructures.Handlers
 {
     public class CommandHandler :
         ICommandHandler<PacketAggregate, CreatePaquetCommand>,
+        ICommandHandler<PacketAggregate, DeletePaquetCommand>,
         ICommandHandler<QuizAggregate, AnswerQuizCommand>,
         ICommandHandler<QuizAggregate, CreateQuizCommand>,
         ICommandHandler<PacketAggregate, AddCardToPacketCommand>
@@ -90,6 +91,22 @@ namespace TangoManagerAPI.Infrastructures.Handlers
             {
                 @event.Dispatch(_eventRouter);
             }
+
+            return packetAggregate;
+        }
+
+        public async Task<PacketAggregate> HandleAsync(DeletePaquetCommand command)
+        {
+            var packetAggregate = await _paquetRepository.GetPacketByNameAsync(command.Name);
+
+            if (packetAggregate == null)
+            {
+                throw new EntityDoNotExistException($"Packet with name {packetAggregate.RootEntity.Name} do not exists, cannot delete Packet.");
+            }
+
+            await _paquetRepository.DeletePacketAsync(packetAggregate);
+
+           
 
             return packetAggregate;
         }

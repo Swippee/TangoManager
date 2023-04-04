@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TangoManagerAPI.Entities.Commands.CommandsPaquet;
+using TangoManagerAPI.Entities.Models;
 using TangoManagerAPI.Entities.Ports.Exceptions;
 using TangoManagerAPI.Entities.Ports.Routers;
 using TangoManagerAPI.Entities.Queries;
@@ -79,6 +80,9 @@ namespace TangoManagerAPI.Controllers
             try
             {
                 var res = await new GetAllPaquetsQuery().QueryAsync(_queryRouter);
+                List<PaquetEntity> result = new List<PaquetEntity>();
+                res.ToList().ForEach(i => result.Add(i.RootEntity));
+
                 return StatusCode(200, res);
             }
             catch (Exception e)
@@ -100,7 +104,17 @@ namespace TangoManagerAPI.Controllers
 
             return StatusCode(200, packetAggregate.RootEntity);
         }
+        [HttpDelete]
+        [Route("{name}")]
+        public async Task<ActionResult> DeleteAsync([FromRoute] string name)
+        {
+            DeletePaquetCommand deletePacketCommand = new(name);
 
+
+            var packetAggregate = await deletePacketCommand.ExecuteAsync(_commandRouter);
+
+            return StatusCode(200, packetAggregate.RootEntity);
+        }
         [HttpPut]
         [Route("{packetName}")]
         public async Task<ActionResult> AddCardAsync([FromRoute] string packetName, [FromBody] AddCardToPacketCommand addCardToPacketCommand)

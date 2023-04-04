@@ -7,6 +7,7 @@ using System.Data;
 using System.Data.SqlTypes;
 using System.Linq;
 using System.Threading.Tasks;
+using TangoManagerAPI.Entities.Exceptions;
 using TangoManagerAPI.Entities.Models;
 using TangoManagerAPI.Entities.Ports.Repositories;
 
@@ -23,15 +24,25 @@ namespace TangoManagerAPI.Infrastructures.Repositories
         /// Requete pour ramener tous les paquets dans une liste
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<PaquetEntity>> GetPacketsAsync()
+        public async Task<IEnumerable<PacketAggregate>> GetPacketsAsync()
         {
-
+            List<PacketAggregate> result= new List<PacketAggregate>();
             using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
             {
                 await connection.OpenAsync();
                 var query = "select * from Paquet";
-                var allTransaction = await connection.QueryAsync<PaquetEntity>(query);
-                return allTransaction.ToList();
+
+                var packetstsEntity = await connection.QueryAsync<PaquetEntity>(query);
+
+                const string cardsQuery = "select * from Carte WHERE PacketName=@Name";
+                foreach (var packet in packetstsEntity)
+                {
+
+                    var cardEntities = await connection.QueryAsync<CarteEntity>(cardsQuery, new { Name = packet.Name });
+                    packet.CardsCollection = cardEntities.ToList();
+                    result.Add(new PacketAggregate(packet));
+                }
+                return result;
             }
         }
 
@@ -138,5 +149,39 @@ namespace TangoManagerAPI.Infrastructures.Repositories
                 throw;
             }
         }
+        public async Task DeletePacketAsync(PacketAggregate packetAggregate)
+        {
+
+            await using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
+            await connection.OpenAsync();
+            await using var sqlTran = (SqlTransaction)await connection.BeginTransactionAsync(IsolationLevel.Serializable);
+
+            const string query = @"
+              BEGIN
+                        DELETE c FROM QuizCards c 
+                        INNER JOIN Quiz q ON q.Id=c.IdQuiz
+                        WHERE q.PacketName=@Name;
+                        DELETE FROM QUIZ WHERE PacketName=@Name;
+                        DELETE FROM CARTE WHERE PacketName=@Name;
+                        DELETE FROM PAQUET WHERE Name=@Name;   
+                        
+              END";
+            await using var packetCmd = new SqlCommand(query, connection, sqlTran);
+            packetCmd.Parameters.AddWithValue("@Name", packetAggregate.RootEntity.Name);
+            await packetCmd.ExecuteNonQueryAsync();
+           
+            try
+            {
+
+                sqlTran.Commit();
+            }
+            catch (Exception ex)
+            {
+                await Console.Error.WriteLineAsync(ex.ToString());
+                sqlTran.Rollback();
+                throw;
+            }
+        }
+       
     }
 }

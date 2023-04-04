@@ -41,9 +41,9 @@ namespace TangoManagerAPI.Entities.Models
 
             CurrentCard = packetEntity.CardsCollection.FirstOrDefault(x => x.Id == quiz.CurrentCardId) ?? throw new CardNotFoundException($"Could not find Card with such Id {quiz.CurrentCardId} inside packet {packetEntity.Name}!");
 
-            AnsweredCardsCollection = packetEntity.CardsCollection.Where(x => RootEntity.QuizCardsCollection.Any(y => y.CardId == x.Id)).ToList();
-            CorrectlyAnsweredCardsCollection = AnsweredCardsCollection.Where(x => RootEntity.QuizCardsCollection.Any(y => y.CardId == x.Id && y.IsCorrect)).ToList();
-            IncorrectlyAnsweredCardsCollection = AnsweredCardsCollection.Where(x => RootEntity.QuizCardsCollection.Any(y => y.CardId == x.Id && !y.IsCorrect)).ToList();
+            AnsweredCardsCollection = packetEntity.CardsCollection.Where(x => RootEntity.QuizCardsCollection.Any(y => y.IdCard == x.Id)).ToList();
+            CorrectlyAnsweredCardsCollection = AnsweredCardsCollection.Where(x => RootEntity.QuizCardsCollection.Any(y => y.IdCard == x.Id && y.IsCorrect)).ToList();
+            IncorrectlyAnsweredCardsCollection = AnsweredCardsCollection.Where(x => RootEntity.QuizCardsCollection.Any(y => y.IdCard == x.Id && !y.IsCorrect)).ToList();
 
             if (string.IsNullOrEmpty(quiz.CurrentState))
                 throw new QuizInvalidStateException("Quiz state cannot be null or empty!");
