@@ -100,9 +100,42 @@ namespace TangoManagerAPI.Controllers
         [Route("Index")]
         public async Task<ActionResult> CreateAsync([FromBody] CreatePaquetCommand createPacketCommand)
         {
-            var packetAggregate = await createPacketCommand.ExecuteAsync(_commandRouter);
+            try
+            {
+                var packetAggregate = await createPacketCommand.ExecuteAsync(_commandRouter);
+                return StatusCode(200, packetAggregate.RootEntity);
+            }
 
-            return StatusCode(200, packetAggregate.RootEntity);
+            catch (Exception e)
+            {
+                if (e is TangoManagerException tangoManagerException)
+                {
+                    Console.WriteLine(tangoManagerException.Message);
+
+                    return BadRequest(tangoManagerException.Message);
+
+                }
+                return BadRequest(e.Message);
+            }
+            //catch (Exception e)
+            //{
+            //    if (e is TangoManagerException tangoManagerException)
+            //    {
+            //        var message = new HttpResponseMessage(System.Net.HttpStatusCode.Conflict);
+            //        message.Content = new StringContent(tangoManagerException.Message);
+            //        Console.WriteLine(tangoManagerException.Message);
+            //        throw new System.Web.Http.HttpResponseException(message);
+            //    }
+            //    throw;
+            //}
+            //catch (Exception e)
+            //{
+            //    if (e is TangoManagerException tangoManagerException)
+            //    {
+            //        Console.WriteLine(tangoManagerException.Message);
+            //    }
+            //    throw;
+            //}
         }
         [HttpDelete]
         [Route("{name}")]

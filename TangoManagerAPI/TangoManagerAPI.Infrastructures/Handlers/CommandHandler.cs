@@ -35,7 +35,7 @@ namespace TangoManagerAPI.Infrastructures.Handlers
            var packetAggregate = await _paquetRepository.GetPacketByNameAsync(command.Name);
 
             if (packetAggregate != null) {
-                throw new EntityAlreadyExistsException($"Packet with name {packetAggregate.RootEntity.Name} already exists, cannot add Packet with duplicate name.");
+                throw new EntityAlreadyExistsException($"Packet with name {packetAggregate.RootEntity.Name} already exists in base");
             }
 
             var packetEntity = new PaquetEntity(command.Name, command.Description);

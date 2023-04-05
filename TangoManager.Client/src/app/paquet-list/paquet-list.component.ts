@@ -37,12 +37,17 @@ ngOnInit():void {
   goToCreatePaquet(){
     this.router.navigate(['/','paquet-form']);
   }
+  
   onDelete(packetName: String){
     if (confirm(`Voulez vous vraiment supprimer le Paquet ${packetName}.?`)){
-    this.paquetService.deleteRecordPaquet(packetName).subscribe((data)=>{
+      this.paquetService.deleteRecordPaquet(packetName).subscribe((data)=>{
       this.getAllRecords();
-    });
+      });
+    }
+    else this.getAllRecords();
   }
-  else this.getAllRecords();
+  redirectToCreateCard(packetEntity: PaquetRecord){
+    this.router.navigateByUrl('/card-form/'+packetEntity);
   }
 }
+
