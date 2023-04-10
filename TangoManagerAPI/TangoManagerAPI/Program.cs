@@ -12,6 +12,7 @@ using TangoManagerAPI.Entities.Queries;
 using TangoManagerAPI.Infrastructures.Handlers;
 using TangoManagerAPI.Infrastructures.Repositories;
 using TangoManagerAPI.Infrastructures.Routers;
+using TangoManagerAPI.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -106,5 +107,6 @@ app.UseCors("CorsPolicy");
 
 app.MapControllers();
 app.MapSwagger("swagger/{documentName}/swagger.json");
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.Run();
