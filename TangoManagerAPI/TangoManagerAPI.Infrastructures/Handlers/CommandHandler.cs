@@ -68,6 +68,8 @@ namespace TangoManagerAPI.Infrastructures.Handlers
             if (packetAggregate == null) 
                 throw new EntityDoesNotExistException($"Packet with name {command.PacketName} does not exist, cannot create a Quiz.");
             
+            if (!packetAggregate.RootEntity.CardsCollection.Any())
+                throw new EmptyPaquetException($"Cannot create a Quiz with an empty Packet {command.PacketName}!");
 
             var currentCard = packetAggregate.RootEntity.CardsCollection
                 .Where(x => x.LastQuiz != null)
