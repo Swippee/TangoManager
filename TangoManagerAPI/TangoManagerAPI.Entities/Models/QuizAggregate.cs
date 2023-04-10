@@ -39,7 +39,7 @@ namespace TangoManagerAPI.Entities.Models
             if (!packetEntity.CardsCollection.Any())
                 throw new EmptyPaquetException($"Cannot create a Quiz with an empty Packet {packetEntity.Name}!");
 
-            CurrentCard = packetEntity.CardsCollection.FirstOrDefault(x => x.Id == quiz.CurrentCardId) ?? throw new CardNotFoundException($"Could not find Card with such Id {quiz.CurrentCardId} inside packet {packetEntity.Name}!");
+            CurrentCard = packetEntity.CardsCollection.FirstOrDefault(x => x.Id == quiz.CurrentCardId) ?? throw new CardNotFoundInPacketException($"Could not find Card with such Id {quiz.CurrentCardId} inside packet {packetEntity.Name}!");
 
             AnsweredCardsCollection = packetEntity.CardsCollection.Where(x => RootEntity.QuizCardsCollection.Any(y => y.IdCard == x.Id)).ToList();
             CorrectlyAnsweredCardsCollection = AnsweredCardsCollection.Where(x => RootEntity.QuizCardsCollection.Any(y => y.IdCard == x.Id && y.IsCorrect)).ToList();

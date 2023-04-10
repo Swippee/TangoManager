@@ -29,7 +29,7 @@ namespace TangoManagerAPI.Infrastructures.Repositories
             var quiz = await connection.QueryFirstOrDefaultAsync<QuizEntity>(query, new { Id = id });
            
             if (quiz == null)
-                throw new EntityDoNotExistException($"No quiz found with the Id {id}. Cannot restore Quiz state.");
+                throw new EntityDoesNotExistException($"No quiz found with the Id {id}. Cannot restore Quiz state.");
 
             query = "select * from QuizCards where IdQuiz=@Id";
             var quizCards = await connection.QueryAsync<QuizCardEntity>(query, new { Id = id });
@@ -40,7 +40,7 @@ namespace TangoManagerAPI.Infrastructures.Repositories
             var packet = await connection.QueryFirstOrDefaultAsync<PaquetEntity>(query, new { Name = quiz.PacketName });
 
             if (packet == null)
-                throw new EntityDoNotExistException($"No packet found with the name {quiz.PacketName} for the quiz {quiz.Id}. Cannot restore Quiz state.");
+                throw new EntityDoesNotExistException($"No packet found with the name {quiz.PacketName} for the quiz {quiz.Id}. Cannot restore Quiz state.");
 
             query = "select * from Carte where PacketName=@Name";
             var cards = await connection.QueryAsync<CarteEntity>(query, new { Name = quiz.PacketName });

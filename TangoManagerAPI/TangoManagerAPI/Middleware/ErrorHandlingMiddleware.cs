@@ -29,7 +29,7 @@ namespace TangoManagerAPI.Middleware
                     case EntityAlreadyExistsException ex:
                         httpStatusCode = HttpStatusCode.Conflict;
                         break;
-                    case EntityDoNotExistException ex:
+                    case EntityDoesNotExistException ex:
                         httpStatusCode = HttpStatusCode.NotFound;
                         break;
                     case QuizAlreadyFinishedException ex:

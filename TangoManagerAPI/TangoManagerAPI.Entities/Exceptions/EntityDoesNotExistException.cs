@@ -7,9 +7,9 @@ using TangoManagerAPI.Entities.Ports.Exceptions;
 
 namespace TangoManagerAPI.Entities.Exceptions
 {
-    public class EntityDoNotExistException : TangoManagerException
+    public class EntityDoesNotExistException : TangoManagerException
     {
-        public EntityDoNotExistException(string message)
+        public EntityDoesNotExistException(string message)
             : base(message)
         {
         }

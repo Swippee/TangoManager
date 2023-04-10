@@ -66,7 +66,7 @@ namespace TangoManagerAPI.Infrastructures.Handlers
             var packetAggregate = await _paquetRepository.GetPacketByNameAsync(command.PacketName);
 
             if (packetAggregate == null) 
-                throw new EntityDoNotExistException($"Packet with name {command.PacketName} does not exist, cannot create a Quiz.");
+                throw new EntityDoesNotExistException($"Packet with name {command.PacketName} does not exist, cannot create a Quiz.");
             
 
             var currentCard = packetAggregate.RootEntity.CardsCollection
@@ -87,7 +87,7 @@ namespace TangoManagerAPI.Infrastructures.Handlers
             var packetAggregate = await _paquetRepository.GetPacketByNameAsync(command.PacketName);
 
             if (packetAggregate == null)
-                throw new EntityDoNotExistException($"Packet with name {command.PacketName} does not exist, cannot add card to Packet.");
+                throw new EntityDoesNotExistException($"Packet with name {command.PacketName} does not exist, cannot add card to Packet.");
 
             var card = new CarteEntity(command.PacketName, command.Question, command.Answer, command.Score);
 
@@ -108,7 +108,7 @@ namespace TangoManagerAPI.Infrastructures.Handlers
             var packetAggregate = await _paquetRepository.GetPacketByNameAsync(command.Name);
 
             if (packetAggregate == null)
-                throw new EntityDoNotExistException($"Packet with name {command.Name} does not exist, cannot delete Packet.");
+                throw new EntityDoesNotExistException($"Packet with name {command.Name} does not exist, cannot delete Packet.");
             
             await _paquetRepository.DeletePacketAsync(packetAggregate);
 
