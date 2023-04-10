@@ -1,15 +1,11 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
-using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlTypes;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Transactions;
 using TangoManagerAPI.Entities.Exceptions;
 using TangoManagerAPI.Entities.Models;
 using TangoManagerAPI.Entities.Ports.Repositories;
@@ -23,30 +19,17 @@ namespace TangoManagerAPI.Infrastructures.Repositories
         {
             _config = config;
         }
-        /// <summary>
-        /// Requete pour ramener tous les paquets dans une liste
-        /// </summary>
-        /// <returns></returns>
-        public async Task<IEnumerable<PaquetEntity>> GetPaquetsAsync()
-        {
-
-            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
-            {
-                await connection.OpenAsync();
-                var query = "select * from Paquet";
-                var allTransaction = await connection.QueryAsync<PaquetEntity>(query);
-                return allTransaction.ToList();
-            }
-        }
 
         public async Task<QuizAggregate> GetQuizByIdAsync(int id)
         {
-            using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
+            await using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
             await connection.OpenAsync();
+
             var query = "select * from Quiz where Id=@Id";
             var quiz = await connection.QueryFirstOrDefaultAsync<QuizEntity>(query, new { Id = id });
-            if (quiz==null)
-                throw new EntityDoNotExistException($"No quiz found with the Id {id}.");
+           
+            if (quiz == null)
+                throw new EntityDoNotExistException($"No quiz found with the Id {id}. Cannot restore Quiz state.");
 
             query = "select * from QuizCards where IdQuiz=@Id";
             var quizCards = await connection.QueryAsync<QuizCardEntity>(query, new { Id = id });
@@ -55,18 +38,16 @@ namespace TangoManagerAPI.Infrastructures.Repositories
 
             query = "select * from Paquet where Name=@Name";
             var packet = await connection.QueryFirstOrDefaultAsync<PaquetEntity>(query, new { Name = quiz.PacketName });
-          
+
             if (packet == null)
-                throw new EntityDoNotExistException($"No packet found with the name {quiz.PacketName}.");
+                throw new EntityDoNotExistException($"No packet found with the name {quiz.PacketName} for the quiz {quiz.Id}. Cannot restore Quiz state.");
 
             query = "select * from Carte where PacketName=@Name";
             var cards = await connection.QueryAsync<CarteEntity>(query, new { Name = quiz.PacketName });
 
-            packet.CardsCollection=cards.ToList();
+            packet.CardsCollection = cards.ToList();
 
-            await connection.CloseAsync();
-
-            var quizAggregate = new QuizAggregate(quiz,packet);
+            var quizAggregate = new QuizAggregate(quiz, packet);
 
             return quizAggregate;
         }
@@ -74,53 +55,52 @@ namespace TangoManagerAPI.Infrastructures.Repositories
 
         public async Task SaveQuizAsync(QuizAggregate quizAggregate)
         {
-            using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
+            await using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
             await connection.OpenAsync();
-            string query = "";
+            string query;
+
             if (quizAggregate.RootEntity.Id == null)
             {
+                query =
+                    @"BEGIN;
+                          INSERT INTO Quiz (PacketName,CurrentCardId,CurrentState,CreationDate,LastModification,TotalScore) 
+                          VALUES (@PacketName,@CurrentCardId,@CurrentState,GetDate(),GetDate(),0);
+                          SELECT CAST(SCOPE_IDENTITY() as int);
+                    END;";
 
-                query = "INSERT INTO Quiz (PacketName,CurrentCardId,CurrentState,CreationDate,LastModification,TotalScore) VALUES (@PacketName,@CurrentCardId,@CurrentState,GetDate(),GetDate(),0); " +
-                "SELECT CAST(SCOPE_IDENTITY() as int)";
-
-                var quizId = await connection.ExecuteScalarAsync<int>(query, new { PacketName = quizAggregate.PacketEntity.Name, CurrentCardId = quizAggregate.CurrentCard.Id,CurrentState=quizAggregate.CurrentState.ToString() });
+                var quizId = await connection.ExecuteScalarAsync<int>(query, new { PacketName = quizAggregate.PacketEntity.Name, CurrentCardId = quizAggregate.CurrentCard.Id, CurrentState = quizAggregate.CurrentState.ToString() });
                 quizAggregate.RootEntity.Id = quizId;
-
-
             }
             else
             {
+                await using var sqlTran = (SqlTransaction)await connection.BeginTransactionAsync(IsolationLevel.Serializable);
 
+                query = @"
+                UPDATE Quiz 
+                Set CurrentCardId =@CurrentCardId,
+                CurrentState = @CurrentState,
+                LastModification=@LastModification, 
+                TotalScore=@TotalScore 
+                WHERE PacketName=@PacketName;";
 
-               await using var sqlTran = (SqlTransaction)await connection.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
-
-              const string  quizQuery = @"
-                       UPDATE Quiz 
-                       Set CurrentCardId =@CurrentCardId,
-                       CurrentState = @CurrentState,
-                       LastModification=@LastModification, 
-                       TotalScore=@TotalScore 
-                       WHERE PacketName=@PacketName;
-              ";
-
-                    await using var quizCmd = new SqlCommand(quizQuery, connection, sqlTran);
+                await using var quizCmd = new SqlCommand(query, connection, sqlTran);
                 quizCmd.Parameters.AddWithValue("@CurrentCardId", quizAggregate.RootEntity.CurrentCardId);
-                quizCmd.Parameters.AddWithValue("@CurrentState", quizAggregate.RootEntity.CurrentState.ToString());
+                quizCmd.Parameters.AddWithValue("@CurrentState", quizAggregate.RootEntity.CurrentState);
                 quizCmd.Parameters.AddWithValue("@TotalScore", quizAggregate.RootEntity.TotalScore);
                 quizCmd.Parameters.AddWithValue("@PacketName", quizAggregate.RootEntity.PacketName);
                 quizCmd.Parameters.Add(new SqlParameter("@LastModification", SqlDbType.DateTime)
-                    {
-                        Value = quizAggregate.RootEntity.LastModification ?? SqlDateTime.Null,
-                        IsNullable = true
-                    });
+                {
+                    Value = quizAggregate.RootEntity.LastModification ?? SqlDateTime.Null,
+                    IsNullable = true
+                });
 
-                    const string insertQuizCardQuery =
-                    @"BEGIN
-                      INSERT INTO QuizCards (IdQuiz, IdCard, IsCorrect)
-                      VALUES (@IdQuiz, @IdCard, @IsCorrect)
-                     END";
+                const string insertQuizCardQuery =
+                @"BEGIN
+                    INSERT INTO QuizCards (IdQuiz, IdCard, IsCorrect)
+                    VALUES (@IdQuiz, @IdCard, @IsCorrect)
+                END";
 
-                    await using var quizCardsCmd = new SqlCommand(insertQuizCardQuery, connection, sqlTran);
+                await using var quizCardsCmd = new SqlCommand(insertQuizCardQuery, connection, sqlTran);
                 quizCardsCmd.Parameters.Add(new SqlParameter("@IdQuiz", SqlDbType.Int));
                 quizCardsCmd.Parameters.Add(new SqlParameter("@IdCard", SqlDbType.Int));
                 quizCardsCmd.Parameters.Add(new SqlParameter("@IsCorrect", SqlDbType.Bit));
@@ -135,11 +115,7 @@ namespace TangoManagerAPI.Infrastructures.Repositories
                         quizCardsCmd.Parameters["@IsCorrect"].Value = quizCard.IsCorrect;
                         await quizCardsCmd.ExecuteNonQueryAsync();
                     }
-                            
-                        
                     sqlTran.Commit();
-                    
-
                 }
                 catch (Exception ex)
                 {
@@ -147,9 +123,7 @@ namespace TangoManagerAPI.Infrastructures.Repositories
                     sqlTran.Rollback();
                     throw;
                 }
-
             }
-
         }
     }
 }

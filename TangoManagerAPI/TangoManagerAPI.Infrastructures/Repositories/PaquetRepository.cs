@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿#nullable enable
+using Dapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -7,7 +8,6 @@ using System.Data;
 using System.Data.SqlTypes;
 using System.Linq;
 using System.Threading.Tasks;
-using TangoManagerAPI.Entities.Exceptions;
 using TangoManagerAPI.Entities.Models;
 using TangoManagerAPI.Entities.Ports.Repositories;
 
@@ -26,24 +26,25 @@ namespace TangoManagerAPI.Infrastructures.Repositories
         /// <returns></returns>
         public async Task<IEnumerable<PacketAggregate>> GetPacketsAsync()
         {
-            List<PacketAggregate> result= new List<PacketAggregate>();
-            using (SqlConnection connection = new SqlConnection(_config.GetConnectionString("DefaultConnection")))
-            {
-                await connection.OpenAsync();
-                var query = "select * from Paquet";
+            var result = new List<PacketAggregate>();
+            await using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
 
-                var packetstsEntity = await connection.QueryAsync<PaquetEntity>(query);
+            await connection.OpenAsync();
+            const string query = "select * from Paquet";
 
-                const string cardsQuery = "select * from Carte WHERE PacketName=@Name";
-                foreach (var packet in packetstsEntity)
-                {
+            var packetEntities = await connection.QueryAsync<PaquetEntity>(query);
 
-                    var cardEntities = await connection.QueryAsync<CarteEntity>(cardsQuery, new { Name = packet.Name });
-                    packet.CardsCollection = cardEntities.ToList();
-                    result.Add(new PacketAggregate(packet));
-                }
+            if (!packetEntities.Any())
                 return result;
+
+            const string cardsQuery = "select * from Carte WHERE PacketName=@Name";
+            foreach (var packet in packetEntities)
+            {
+                var cardEntities = await connection.QueryAsync<CarteEntity>(cardsQuery, new { Name = packet.Name });
+                packet.CardsCollection = cardEntities.ToList();
+                result.Add(new PacketAggregate(packet));
             }
+            return result;
         }
 
         /// <summary>
@@ -60,7 +61,9 @@ namespace TangoManagerAPI.Infrastructures.Repositories
             const string packetQuery = "select * from Paquet WHERE Name=@Name";
             var packetEntity = await connection.QueryFirstOrDefaultAsync<PaquetEntity>(packetQuery, new { Name = name });
 
-            if(packetEntity == null) return null; 
+            if (packetEntity == null)
+                return null;
+
             const string cardsQuery = "select * from Carte WHERE PacketName=@Name";
             var cardEntities = await connection.QueryAsync<CarteEntity>(cardsQuery, new { Name = name });
 
@@ -71,7 +74,6 @@ namespace TangoManagerAPI.Infrastructures.Repositories
             return packetAggregate;
         }
 
-        
         public async Task SavePacketAsync(PacketAggregate packetAggregate)
         {
             await using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
@@ -149,6 +151,7 @@ namespace TangoManagerAPI.Infrastructures.Repositories
                 throw;
             }
         }
+
         public async Task DeletePacketAsync(PacketAggregate packetAggregate)
         {
 

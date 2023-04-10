@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TangoManagerAPI.DTO;
 using TangoManagerAPI.Entities.Commands.CommandsQuiz;
 using TangoManagerAPI.Entities.Ports.Routers;
 
@@ -19,9 +20,10 @@ namespace TangoManagerAPI.Controllers
         [HttpPost]
         [Route("")]
         [Route("Index")]
-        public async Task<ActionResult> CreateAsync([FromBody] CreateQuizCommand createQuizCommand)
+        public async Task<ActionResult> CreateAsync([FromBody] CreateQuizRequest createQuizRequest)
         {
-            var quizAggregate = await createQuizCommand.ExecuteAsync(_commandRouter);
+            var cmd = new CreateQuizCommand(createQuizRequest.PacketName);
+            var quizAggregate = await cmd.ExecuteAsync(_commandRouter);
 
             return StatusCode(200, new
             {
@@ -32,9 +34,10 @@ namespace TangoManagerAPI.Controllers
 
         [HttpPost]
         [Route("Answer")]
-        public async Task<ActionResult> AnswerAsync([FromBody] AnswerQuizCommand answerQuizCommand)
+        public async Task<ActionResult> AnswerAsync(AnswerQuizRequest answerQuizRequest)
         {
-            var quizAggregate = await answerQuizCommand.ExecuteAsync(_commandRouter);
+            var cmd = new AnswerQuizCommand(answerQuizRequest.QuizId, answerQuizRequest.Answer);
+            var quizAggregate = await cmd.ExecuteAsync(_commandRouter);
 
             return StatusCode(200, new
             {

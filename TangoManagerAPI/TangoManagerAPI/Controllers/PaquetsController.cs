@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TangoManagerAPI.DTO;
 using TangoManagerAPI.Entities.Commands.CommandsPaquet;
 using TangoManagerAPI.Entities.Models;
 using TangoManagerAPI.Entities.Ports.Routers;
@@ -34,9 +35,10 @@ namespace TangoManagerAPI.Controllers
         [HttpPost]
         [Route("")]
         [Route("Index")]
-        public async Task<ActionResult> CreateAsync([FromBody] CreatePaquetCommand createPacketCommand)
+        public async Task<ActionResult> CreateAsync([FromBody] CreatePacketRequest createPacketRequest)
         {
-            var packetAggregate = await createPacketCommand.ExecuteAsync(_commandRouter);
+            var cmd = new CreatePaquetCommand(createPacketRequest.Name, createPacketRequest.Description);
+            var packetAggregate = await cmd.ExecuteAsync(_commandRouter);
 
             return StatusCode(200, packetAggregate.RootEntity);
         }
@@ -45,17 +47,18 @@ namespace TangoManagerAPI.Controllers
         [Route("{name}")]
         public async Task<ActionResult> DeleteAsync([FromRoute] string name)
         {
-            DeletePaquetCommand deletePacketCommand = new(name);
-
-            var packetAggregate = await deletePacketCommand.ExecuteAsync(_commandRouter);
+            var cmd = new DeletePaquetCommand(name);
+            var packetAggregate = await cmd.ExecuteAsync(_commandRouter);
 
             return StatusCode(200, packetAggregate.RootEntity);
         }
 
         [HttpPut]
-        public async Task<ActionResult> AddCardAsync([FromBody] AddCardToPacketCommand addCardToPacketCommand)
+        [Route("{packetName}")]
+        public async Task<ActionResult> AddCardAsync([FromRoute] string packetName, [FromBody] AddCardToPacketRequest addCardToPacketRequest)
         {
-            var packetAggregate = await addCardToPacketCommand.ExecuteAsync(_commandRouter);
+            var cmd = new AddCardToPacketCommand(packetName, addCardToPacketRequest.Question, addCardToPacketRequest.Answer, addCardToPacketRequest.Score);
+            var packetAggregate = await cmd.ExecuteAsync(_commandRouter);
 
             return StatusCode(200, packetAggregate.RootEntity);
         }
