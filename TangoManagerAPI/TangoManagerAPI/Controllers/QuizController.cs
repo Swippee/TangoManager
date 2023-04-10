@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using TangoManagerAPI.DTO;
 using TangoManagerAPI.Entities.Commands.CommandsQuiz;
 using TangoManagerAPI.Entities.Ports.Routers;
@@ -25,7 +26,7 @@ namespace TangoManagerAPI.Controllers
             var cmd = new CreateQuizCommand(createQuizRequest.PacketName);
             var quizAggregate = await cmd.ExecuteAsync(_commandRouter);
 
-            return StatusCode(200, new
+            return StatusCode((int)HttpStatusCode.Created, new
             {
                 Quiz = quizAggregate.RootEntity,
                 Packet = quizAggregate.PacketEntity
@@ -39,7 +40,7 @@ namespace TangoManagerAPI.Controllers
             var cmd = new AnswerQuizCommand(answerQuizRequest.QuizId, answerQuizRequest.Answer);
             var quizAggregate = await cmd.ExecuteAsync(_commandRouter);
 
-            return StatusCode(200, new
+            return StatusCode((int)HttpStatusCode.OK, new
             {
                 Quiz = quizAggregate.RootEntity,
                 Packet = quizAggregate.PacketEntity,

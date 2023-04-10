@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
 using TangoManagerAPI.DTO;
 using TangoManagerAPI.Entities.Commands.CommandsPaquet;
 using TangoManagerAPI.Entities.Models;
@@ -29,7 +30,10 @@ namespace TangoManagerAPI.Controllers
             List<PaquetEntity> result = new List<PaquetEntity>();
             res.ToList().ForEach(i => result.Add(i.RootEntity));
 
-            return StatusCode(200, res);
+            if (!result.Any())
+                return StatusCode((int)HttpStatusCode.NoContent);
+
+            return StatusCode((int)HttpStatusCode.OK, res);
         }
 
         [HttpPost]
@@ -40,7 +44,7 @@ namespace TangoManagerAPI.Controllers
             var cmd = new CreatePaquetCommand(createPacketRequest.Name, createPacketRequest.Description);
             var packetAggregate = await cmd.ExecuteAsync(_commandRouter);
 
-            return StatusCode(200, packetAggregate.RootEntity);
+            return StatusCode((int)HttpStatusCode.Created, packetAggregate.RootEntity);
         }
 
         [HttpDelete]
@@ -50,7 +54,7 @@ namespace TangoManagerAPI.Controllers
             var cmd = new DeletePaquetCommand(name);
             var packetAggregate = await cmd.ExecuteAsync(_commandRouter);
 
-            return StatusCode(200, packetAggregate.RootEntity);
+            return StatusCode((int)HttpStatusCode.OK, packetAggregate.RootEntity);
         }
 
         [HttpPut]
@@ -60,7 +64,7 @@ namespace TangoManagerAPI.Controllers
             var cmd = new AddCardToPacketCommand(packetName, addCardToPacketRequest.Question, addCardToPacketRequest.Answer, addCardToPacketRequest.Score);
             var packetAggregate = await cmd.ExecuteAsync(_commandRouter);
 
-            return StatusCode(200, packetAggregate.RootEntity);
+            return StatusCode((int)HttpStatusCode.OK, packetAggregate.RootEntity);
         }
     }
 }
