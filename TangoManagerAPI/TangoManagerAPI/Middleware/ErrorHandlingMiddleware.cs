@@ -20,7 +20,7 @@ namespace TangoManagerAPI.Middleware
                     case CardAlreadyExistsInPacketException ex:
                         httpStatusCode = HttpStatusCode.Conflict;
                         break;
-                    case CardNotFoundException ex:
+                    case CardNotFoundInPacketException ex:
                         httpStatusCode = HttpStatusCode.NotFound;
                         break;
                     case EmptyPaquetException ex:
@@ -39,7 +39,7 @@ namespace TangoManagerAPI.Middleware
                         httpStatusCode = HttpStatusCode.BadRequest;
                         break;
                     default:
-                        httpStatusCode = HttpStatusCode.InternalServerError; ;
+                        httpStatusCode = HttpStatusCode.InternalServerError; 
                         break;
 
                 }

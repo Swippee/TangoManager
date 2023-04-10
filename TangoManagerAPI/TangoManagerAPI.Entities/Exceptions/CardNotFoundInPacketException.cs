@@ -7,9 +7,9 @@ using TangoManagerAPI.Entities.Ports.Exceptions;
 
 namespace TangoManagerAPI.Entities.Exceptions
 {
-    public class CardNotFoundException : TangoManagerException
+    public class CardNotFoundInPacketException : TangoManagerException
     {
-        public CardNotFoundException(string message)
+        public CardNotFoundInPacketException(string message)
             : base(message)
         {
         }
