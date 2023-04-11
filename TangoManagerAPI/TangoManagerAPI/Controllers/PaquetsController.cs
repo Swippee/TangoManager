@@ -52,9 +52,9 @@ namespace TangoManagerAPI.Controllers
         public async Task<ActionResult> DeleteAsync([FromRoute] string name)
         {
             var cmd = new DeletePaquetCommand(name);
-            var packetAggregate = await cmd.ExecuteAsync(_commandRouter);
+            await cmd.ExecuteAsync(_commandRouter);
 
-            return StatusCode((int)HttpStatusCode.OK, packetAggregate.RootEntity);
+            return StatusCode((int)HttpStatusCode.OK);
         }
 
         [HttpPut]

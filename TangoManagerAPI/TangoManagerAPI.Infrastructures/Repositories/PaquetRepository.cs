@@ -161,12 +161,12 @@ namespace TangoManagerAPI.Infrastructures.Repositories
 
             const string query = @"
               BEGIN
-                DELETE quizCards
-                FROM QuizCards quizCards 
-                INNER JOIN QUIZ quiz ON quiz.Id=quizCards.IdQuiz
-                INNER JOIN CARTE card ON card.PacketName=quiz.PacketName
-                INNER JOIN PAQUET paquet ON paquet.Name=card.PacketName
-                WHERE paquet.Name=@Name
+                DELETE c FROM QuizCards c 
+                        INNER JOIN Quiz q ON q.Id=c.IdQuiz
+                        WHERE q.PacketName=@Name;
+                        DELETE FROM QUIZ WHERE PacketName=@Name;
+                        DELETE FROM CARTE WHERE PacketName=@Name;
+                        DELETE FROM PAQUET WHERE Name=@Name;   
               END";
 
             await using var packetCmd = new SqlCommand(query, connection, sqlTran);

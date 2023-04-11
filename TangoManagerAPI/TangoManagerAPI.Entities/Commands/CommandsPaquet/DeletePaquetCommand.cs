@@ -4,7 +4,7 @@ using TangoManagerAPI.Entities.Ports.Routers;
 
 namespace TangoManagerAPI.Entities.Commands.CommandsPaquet
 {
-    public sealed class DeletePaquetCommand : ACommand<PacketAggregate, DeletePaquetCommand>
+    public sealed class DeletePaquetCommand : ACommand<Task, DeletePaquetCommand>
     {
         public string Name { get; }
 
@@ -14,7 +14,7 @@ namespace TangoManagerAPI.Entities.Commands.CommandsPaquet
             Name = name;
         }
 
-        public override async Task<PacketAggregate> ExecuteAsync(ICommandRouter commandRouter)
+        public override async Task<Task> ExecuteAsync(ICommandRouter commandRouter)
         {
             return await commandRouter.RouteAwaitForResultAsync(this);
         }
