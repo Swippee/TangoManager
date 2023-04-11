@@ -45,7 +45,7 @@ namespace TangoManagerAPI.Middleware
                 }
 
                 context.Response.StatusCode = (int)httpStatusCode;
-                await context.Response.WriteAsync(exception.Message);
+                await context.Response.WriteAsJsonAsync(exception.Message);
                 await context.Response.CompleteAsync();
             }
         }
