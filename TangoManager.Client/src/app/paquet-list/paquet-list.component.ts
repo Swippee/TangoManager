@@ -3,6 +3,7 @@ import { PaquetService } from '../paquet.service';
 import { PaquetRecord } from '../models/PaquetRecord';
 import * as moment  from 'node_modules/moment/moment.js';
 import { Router } from '@angular/router';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-paquet-list',
@@ -11,6 +12,8 @@ import { Router } from '@angular/router';
 })
 export class PaquetListComponent  {
   records:PaquetRecord[]=[];
+  // tests:TestRecord[] ;
+  // result:TestRecord;
   canDisplayData=false;
 constructor(
   private paquetService: PaquetService,
@@ -34,6 +37,18 @@ ngOnInit():void {
       });
     })
   }
+  // TestMappingRecords() {
+  //   var date = moment();
+  //     this.paquetService.getPaquetRecords().subscribe((data) => {
+  //       this.tests=data?map(
+  //         result => {
+  //           return {
+  //             packet:result.rootEntity
+  //           }
+  //         }
+  //       )
+  //   });
+  //}
   goToCreatePaquet(){
     this.router.navigate(['/','paquet-form']);
   }

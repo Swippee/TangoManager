@@ -29,6 +29,9 @@ getCardRecords(){
 addQuizRecord(packetName:Object){
   return this.http.post(this.rootURL + '/api/Quiz',packetName);
   }
+answerQuizRecord(answer:Object){
+    return this.http.post(this.rootURL + '/api/Quiz/Answer',answer);
+    }
   handleError(error:any) {
     let errorMessage = '';
     if (error.error instanceof ErrorEvent) {

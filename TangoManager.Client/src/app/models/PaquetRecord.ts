@@ -1,13 +1,14 @@
 
 export interface PaquetRecord {
-    rootEntity: RootEntity;
+    rootEntity: PaquetEntity;
     addedCards: any[];
 }
 
-export interface RootEntity {
+export interface PaquetEntity {
     name:             string;
     description:      string;
     lastModification: string;
+    lastQuiz:         string;
     cardsCollection:  CardsCollection[];
 }
 
@@ -17,5 +18,10 @@ export interface CardsCollection {
     question:         string;
     answer:           string;
     score:            number;
-    lastModification: Date;
+    lastModification: string;
+    lastQuiz: string        
 }
+// export interface TestRecord {
+//     packet: RootEntity;
+//     addedCards: any[];
+// }
