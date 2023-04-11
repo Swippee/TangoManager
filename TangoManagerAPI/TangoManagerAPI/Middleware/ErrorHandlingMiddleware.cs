@@ -6,6 +6,8 @@ namespace TangoManagerAPI.Middleware
     public class ErrorHandlingMiddleware : IMiddleware 
     {
 
+
+
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             try
@@ -43,9 +45,9 @@ namespace TangoManagerAPI.Middleware
                         break;
 
                 }
-
+                
                 context.Response.StatusCode = (int)httpStatusCode;
-                await context.Response.WriteAsJsonAsync(exception.Message);
+                await context.Response.WriteAsJsonAsync(new {messageFull=exception.ToString(),messageShort=exception.Message} );
                 await context.Response.CompleteAsync();
             }
         }
