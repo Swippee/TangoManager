@@ -1,0 +1,81 @@
+[
+    {
+      "rootEntity": {
+        "name": "pizza",
+        "description": "mian",
+        "lastModification": "2023-04-05T17:50:52.393",
+        "cardsCollection": [
+          {
+            "id": 11,
+            "packetName": "pizza",
+            "question": "pepperonie",
+            "answer": "fromage",
+            "score": 2,
+            "lastModification": "2023-03-30T11:02:05.41"
+          },
+          {
+            "id": 12,
+            "packetName": "pizza",
+            "question": "norvegienne",
+            "answer": "creme fraiche",
+            "score": 8,
+            "lastModification": "2023-03-30T11:11:42.39"
+          },
+          {
+            "id": 13,
+            "packetName": "pizza",
+            "question": "vitesse",
+            "answer": "rapide",
+            "score": 6,
+            "lastModification": "2023-03-30T16:51:14.027"
+          },
+          {
+            "id": 14,
+            "packetName": "pizza",
+            "question": "pizza",
+            "answer": "fromage",
+            "score": 0,
+            "lastModification": "2023-04-05T17:50:52.393"
+          }
+        ]
+      },
+      "addedCards": []
+    },
+    {
+      "rootEntity": {
+        "name": "monde",
+        "description": "Tableau éléments",
+        "lastModification": "2023-02-26T11:05:37.547",
+        "lastQuiz": "2023-03-09T20:10:37.517",
+        "cardsCollection": []
+      },
+      "addedCards": []
+    },
+    {
+      "rootEntity": {
+        "name": "livre",
+        "description": "Auteur de livres",
+        "lastModification": "2023-04-10T09:33:01.253",
+        "lastQuiz": "2023-03-09T20:10:37.517",
+        "cardsCollection": [
+          {
+            "id": 8,
+            "packetName": "Ecrivain",
+            "question": "Roman",
+            "answer": "Guerre et Paix",
+            "score": 0,
+            "lastModification": "2023-03-30T12:11:27.433"
+          },
+          {
+            "id": 1014,
+            "packetName": "Ecrivain",
+            "question": "jojo",
+            "answer": "rabit",
+            "score": 4,
+            "lastModification": "2023-04-10T09:33:01.253"
+          }
+        ]
+      },
+      "addedCards": []
+    }
+]

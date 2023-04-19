@@ -8,20 +8,20 @@
             <th scope="col">Action</th>
         </tr>
     </thead>
-    <tbody *ngFor='let record of records'>
-        <tr>
-            <td class="vertical-middle record-name table-cell">{{record.rootEntity.name}} </td> 
-            <td class="vertical-middle record-name table-cell">{{record.rootEntity.description}}</td>
+    <tbody id="listPaquet" *ngFor='let record of records'>
+        <tr id="linePacket">
+            <td id="namePacket" class="vertical-middle record-name table-cell">{{record.rootEntity.name}} </td> 
+            <td id="descriptionPacket" class="vertical-middle record-name table-cell">{{record.rootEntity.description}}</td>
             <td class="vertical-middle record-name table-cell">{{record.rootEntity.lastModification}}</td> 
-            <td class="vertical-middle record-name table-cell">{{record.rootEntity.cardsCollection.length}}</td> 
+            <td id="cardsCollection" class="vertical-middle record-name table-cell">{{record.rootEntity.cardsCollection.length}}</td> 
             <td class="vertical-middle table-cell">
             <button class="btn btn-danger form-button" (click)="onDelete(record.rootEntity.name)">
                 <i class="bi bi-trash"></i>
             </button>
-            <button class="btn btn-primary" routerLink="card-form/{{record.rootEntity.name}}">
+            <button id="addCardLink" class="btn btn-primary" routerLink="card-form/{{record.rootEntity.name}}">
                 <i class="bi bi-pen"></i>
             </button>
-            <button *ngIf="record.rootEntity.cardsCollection.length>0" routerLink="quiz-form/{{record.rootEntity.name}}">Lancer le Quiz</button>
+            <button id="linkToQuiz" data-cy="startQuizzButton" *ngIf="record.rootEntity.cardsCollection.length>0" routerLink="quiz-form/{{record.rootEntity.name}}">Lancer le Quiz</button>
             </td>
         </tr>
     </tbody>

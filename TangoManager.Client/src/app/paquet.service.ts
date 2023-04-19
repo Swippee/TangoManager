@@ -40,12 +40,14 @@ answerQuizRecord(answer:Object){
     } else {
       // server-side error
       // errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
-      errorMessage = `Error Code: ${error.status}\nMessage: ${error.error}`;
+      errorMessage = `Error Code: ${error.status}\nMessage: ${error.error.messageShort}`;
+      console.log(errorMessage);
+      console.log(error.error.messageFull);
+      return throwError(error);
     }
-    console.log(errorMessage);
     // return throwError(() => {
     //     return errorMessage;
     // });
-    return throwError(error);
+    return throwError(errorMessage);
   }
 }

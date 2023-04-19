@@ -37,7 +37,7 @@ this.paquetService.addRecordPaquet(this.addRecordPaquet.value).subscribe((res)=>
   this.router.navigate(['/paquet-list']);
   },
   (error: HttpErrorResponse)=>{
-    alert(error.error);
+    alert(error.error.messageShort);
   }
 )
 

@@ -6,7 +6,10 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "e2e": "ng e2e",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "private": true,
   "dependencies": {
@@ -21,10 +24,12 @@
     "bootstrap": "^5.2.3",
     "bootstrap-icons": "^1.10.3",
     "install": "^0.13.0",
+    "jquery": "^3.6.4",
     "json-schema-to-typescript": "^12.0.0",
     "moment": "^2.29.4",
     "npm": "^9.6.3",
     "rxjs": "~7.8.0",
+    "save": "^2.9.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.12.0"
   },
@@ -32,7 +37,9 @@
     "@angular-devkit/build-angular": "^15.1.6",
     "@angular/cli": "~15.1.6",
     "@angular/compiler-cli": "^15.1.0",
+    "@cypress/schematic": "^2.5.0",
     "@types/jasmine": "~4.3.0",
+    "cypress": "latest",
     "jasmine-core": "~4.5.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.1.0",

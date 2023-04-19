@@ -2,7 +2,6 @@ import { Component,OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PaquetService } from '../paquet.service';
 import { Router,ActivatedRoute } from '@angular/router';
-import { PaquetRecord } from '../models/PaquetRecord';
 @Component({
   selector: 'app-card-form',
   templateUrl: './card-form.component.html',
@@ -10,9 +9,8 @@ import { PaquetRecord } from '../models/PaquetRecord';
 })
 export class CardFormComponent implements OnInit{
   public addRecordCard:FormGroup;
-  test:PaquetRecord;
   submitButton="Ajouter une carte";
- 
+  public test : string;
   constructor(private fb:FormBuilder,
     private paquetService : PaquetService,
     private router: Router,
@@ -22,10 +20,8 @@ export class CardFormComponent implements OnInit{
   }
   
   emptyForm(){
-   // this.test = this.activatedRoute.snapshot.paramMap.get('packetEntity');
-    console.log(this.activatedRoute.snapshot.paramMap.get('packetEntity') );
-    // let record: PaquetRecord;
-    // record = this.activatedRoute.snapshot.paramMap.get('packetName') as PaquetRecord
+    console.log(this.activatedRoute.snapshot.paramMap.get('packetName')?.toString());
+    
     this.addRecordCard = this.fb.group({
       packetName:this.activatedRoute.snapshot.paramMap.get('packetName')?.toString(),
       question : ['',[Validators.required]],
