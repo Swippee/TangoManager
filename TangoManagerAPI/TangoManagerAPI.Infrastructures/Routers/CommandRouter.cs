@@ -2,7 +2,6 @@
 using System;
 using System.Threading.Tasks;
 using TangoManagerAPI.Entities.Commands;
-using TangoManagerAPI.Entities.Ports.Handler;
 using TangoManagerAPI.Entities.Ports.Handlers;
 using TangoManagerAPI.Entities.Ports.Routers;
 

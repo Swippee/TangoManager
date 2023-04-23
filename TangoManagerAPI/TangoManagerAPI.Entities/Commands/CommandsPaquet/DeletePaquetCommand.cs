@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using TangoManagerAPI.Entities.Models;
 using TangoManagerAPI.Entities.Ports.Routers;
 
 namespace TangoManagerAPI.Entities.Commands.CommandsPaquet

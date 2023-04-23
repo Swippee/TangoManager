@@ -6,6 +6,7 @@ using TangoManagerAPI.Application.Queries.CommandsAuth;
 using TangoManagerAPI.Entities.Commands.CommandsPaquet;
 using TangoManagerAPI.Entities.Commands.CommandsQuiz;
 using TangoManagerAPI.Entities.Events;
+using TangoManagerAPI.Entities.Events.PacketLockEntityEvents;
 using TangoManagerAPI.Entities.Events.QuizAggregateEvents;
 using TangoManagerAPI.Entities.Ports.Repositories;
 using TangoManagerAPI.Entities.Ports.Routers;
@@ -14,6 +15,7 @@ using TangoManagerAPI.Infrastructures.Handlers;
 using TangoManagerAPI.Infrastructures.Repositories;
 using TangoManagerAPI.Infrastructures.Routers;
 using TangoManagerAPI.Middleware;
+using TangoManagerAPI.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -73,6 +75,7 @@ builder.Services.AddSingleton<IEventRouter>(p => {
     eventRouter.AddEventHandler<QuizCardEntityAddedEvent>(handler);
     eventRouter.AddEventHandler<PacketUpdatedEvent>(handler);
     eventRouter.AddEventHandler<CardUpdatedEvent>(handler);
+    eventRouter.AddEventHandler<PacketLockAccessedEvent>(handler);
 
     return eventRouter;
 });
@@ -86,7 +89,11 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.OperationFilter<SwaggerPacketTokenParameter>();
+});
+
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
 builder.Services.AddMemoryCache(options =>

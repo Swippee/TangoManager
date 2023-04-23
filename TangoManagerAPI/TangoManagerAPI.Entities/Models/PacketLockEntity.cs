@@ -1,11 +1,13 @@
 ﻿using System;
+using TangoManagerAPI.Entities.Events;
+using TangoManagerAPI.Entities.Events.PacketLockEntityEvents;
 
 namespace TangoManagerAPI.Entities.Models
 {
     public class PacketLockEntity
     {
         public static TimeSpan CacheExpiration => TimeSpan.FromMinutes(10);
-        public static TimeSpan AccessTimeout => TimeSpan.FromMinutes(20);
+        private static TimeSpan AccessTimeout => TimeSpan.FromMinutes(20);
  
         public PacketLockEntity(string packetName, string lockToken)
         {
@@ -19,11 +21,12 @@ namespace TangoManagerAPI.Entities.Models
         public string PacketName { get; set; }
         public DateTime CreationDateTime { get; set; }
         public DateTime LastAccessedDateTime { get; set; }
-        public bool IsExpired => LastAccessedDateTime >= CreationDateTime;
+        public bool IsExpired => TimeSpan.FromMinutes((DateTime.UtcNow - LastAccessedDateTime).TotalMinutes) >= AccessTimeout;
 
-        public void UpdateLastAccessedDateTime()
+        public AEvent UpdateLastAccessedDateTime()
         {
             LastAccessedDateTime = DateTime.UtcNow;
+            return new PacketLockAccessedEvent(this);
         }
     }
 }

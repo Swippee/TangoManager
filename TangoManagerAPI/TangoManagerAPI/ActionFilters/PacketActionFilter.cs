@@ -9,6 +9,8 @@ namespace TangoManagerAPI.ActionFilters
     public sealed class PacketActionFilter : Attribute, IAsyncActionFilter
     {
         private IQueryRouter? _queryRouter;
+        private IEventRouter? _eventRouter;
+
         private const string HeaderName = "PacketToken";
         private readonly string _packetParameterName;
 
@@ -21,6 +23,7 @@ namespace TangoManagerAPI.ActionFilters
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             _queryRouter = context.HttpContext.RequestServices.GetRequiredService<IQueryRouter>();
+            _eventRouter = context.HttpContext.RequestServices.GetRequiredService<IEventRouter>();
 
             if (!context.RouteData.Values.TryGetValue(_packetParameterName, out var packetName))
             {
@@ -45,6 +48,9 @@ namespace TangoManagerAPI.ActionFilters
             {
                 throw new InvalidPacketTokenException($"Provided packet lock token for packet {packetName} is not valid!");
             }
+
+            var lastAccessedEvent = packetLockEntity.UpdateLastAccessedDateTime();
+            lastAccessedEvent.Dispatch(_eventRouter);
 
             await next();
         }
