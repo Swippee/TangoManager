@@ -18,7 +18,7 @@ namespace TangoManagerAPI.Entities.Models
         public string LockToken { get; set; }
         public string PacketName { get; set; }
         public DateTime CreationDateTime { get; set; }
-        public DateTime LastAccessedDateTime { get; private set; }
+        public DateTime LastAccessedDateTime { get; set; }
         public bool IsExpired => LastAccessedDateTime >= CreationDateTime;
 
         public void UpdateLastAccessedDateTime()

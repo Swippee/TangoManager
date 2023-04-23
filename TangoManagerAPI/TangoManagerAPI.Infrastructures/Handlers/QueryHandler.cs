@@ -52,7 +52,6 @@ namespace TangoManagerAPI.Infrastructures.Handlers
                 return null;
 
             //Save into cache if found
-            packetLockEntity.UpdateLastAccessedDateTime();
             _memoryCache.Set(query.PacketName, packetLockEntity, new MemoryCacheEntryOptions
             {
                 SlidingExpiration = PacketLockEntity.CacheExpiration
