@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text.Json.Serialization;
+using TangoManagerAPI.Entities.Commands.CommandsLock;
 using TangoManagerAPI.Entities.Commands.CommandsPaquet;
 using TangoManagerAPI.Entities.Commands.CommandsQuiz;
 using TangoManagerAPI.Entities.Events;
@@ -24,7 +25,7 @@ builder.Services.AddCors(opt => opt.AddPolicy("CorsPolicy", policy =>
 }));
 builder.Services.AddSingleton<IPaquetRepository,PaquetRepository>();
 builder.Services.AddSingleton<IQuizRepository,QuizRepository>();
-//builder.Services.AddSingleton<ICartesRepository>();
+builder.Services.AddSingleton<ILockerRepository,LockerRepository>();
 
 
 builder.Services.AddSingleton<QueryHandler>();
@@ -56,6 +57,7 @@ builder.Services.AddSingleton<ICommandRouter>(p => {
     commandRouter.AddCommandHandler<CreateQuizCommand>(handler);
     commandRouter.AddCommandHandler<AnswerQuizCommand>(handler);
     commandRouter.AddCommandHandler<AddCardToPacketCommand>(handler);
+    commandRouter.AddCommandHandler<AddLockToPacketCommand>(handler);
 
     return commandRouter;
 });

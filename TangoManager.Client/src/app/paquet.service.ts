@@ -10,11 +10,12 @@ export class PaquetService {
 readonly rootURL='https://localhost:7107';
 
 constructor(private http: HttpClient){}
+//Packet and Cards Calls  
 getPaquetRecords(){
   return this.http.get(this.rootURL + '/api/Paquets');
   }
 addRecordPaquet(paquet:PaquetRecord){
-  return this.http.post(this.rootURL + '/api/Paquets',paquet).pipe(catchError(this.handleError));;
+  return this.http.post(this.rootURL + '/api/Paquets',paquet).pipe(catchError(this.handleError));
   
   }
 deleteRecordPaquet(packetName:String){
@@ -26,13 +27,26 @@ return this.http.put(this.rootURL + '/api/Paquets/' + card.packetName,card).pipe
 getCardRecords(){
   return this.http.get(this.rootURL + '/api/Paquets/Card');
   }
+
+ // Quiz calls 
 addQuizRecord(packetName:Object){
   return this.http.post(this.rootURL + '/api/Quiz',packetName);
   }
 answerQuizRecord(answer:Object){
     return this.http.post(this.rootURL + '/api/Quiz/Answer',answer);
     }
-  handleError(error:any) {
+
+ // LockerCall
+ 
+//  addPacketLock(packetName:String):Observable<{token:string}>{
+//   return this.http.put(this.rootURL + '/api/Locker/' +packetName,null);
+   //
+   addPacketLock(packetName:String){
+    return this.http.put(this.rootURL + '/api/Locker/' +packetName,null)
+    .pipe(catchError(this.handleError));
+ }
+
+ handleError(error:any) {
     let errorMessage = '';
     if (error.error instanceof ErrorEvent) {
       // client-side error

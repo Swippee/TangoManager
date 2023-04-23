@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using TangoManagerAPI.Entities.Commands.CommandsLock;
 using TangoManagerAPI.Entities.Commands.CommandsPaquet;
 using TangoManagerAPI.Entities.Commands.CommandsQuiz;
 using TangoManagerAPI.Entities.Exceptions;
@@ -15,18 +16,21 @@ namespace TangoManagerAPI.Infrastructures.Handlers
         ICommandHandler<Task, DeletePaquetCommand>,
         ICommandHandler<QuizAggregate, AnswerQuizCommand>,
         ICommandHandler<QuizAggregate, CreateQuizCommand>,
-        ICommandHandler<PacketAggregate, AddCardToPacketCommand>
+        ICommandHandler<PacketAggregate, AddCardToPacketCommand>,
+        ICommandHandler<PacketLockEntity, AddLockToPacketCommand>
     {
         private readonly IPaquetRepository _paquetRepository;
+        private readonly ILockerRepository _lockerRepository;
         private readonly IEventRouter _eventRouter;
         private readonly IQuizRepository _quizRepository;
 
 
-        public CommandHandler(IPaquetRepository paquetRepository, IEventRouter eventRouter, IQuizRepository quizRepository)
+        public CommandHandler(IPaquetRepository paquetRepository, IEventRouter eventRouter, IQuizRepository quizRepository, ILockerRepository lockerRepository)
         {
             _paquetRepository = paquetRepository;
             _eventRouter = eventRouter;
             _quizRepository = quizRepository;
+            _lockerRepository = lockerRepository;
         }
 
         public async Task<PacketAggregate> HandleAsync(CreatePaquetCommand command)
@@ -114,6 +118,13 @@ namespace TangoManagerAPI.Infrastructures.Handlers
 
             await _paquetRepository.DeletePacketAsync(packetAggregate);
             return Task.CompletedTask;
+        }
+
+
+        public async Task<PacketLockEntity> HandleAsync(AddLockToPacketCommand command)
+        {
+            var lockPaquet = await _lockerRepository.CreateLockerAsync(command.PacketName);
+            return lockPaquet;
         }
     }
 }

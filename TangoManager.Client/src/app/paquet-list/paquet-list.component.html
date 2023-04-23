@@ -21,7 +21,8 @@
             <button id="addCardLink" class="btn btn-primary" routerLink="card-form/{{record.rootEntity.name}}">
                 <i class="bi bi-pen"></i>
             </button>
-            <button id="linkToQuiz" data-cy="startQuizzButton" *ngIf="record.rootEntity.cardsCollection.length>0" routerLink="quiz-form/{{record.rootEntity.name}}">Lancer le Quiz</button>
+            <button id="linkToQuiz" data-cy="startQuizzButton" *ngIf="record.rootEntity.cardsCollection.length>0" (click)="redirectToStartQuiz(record.rootEntity.name)">Lancer le Quiz</button>
+            <!-- <button id="linkToQuiz" data-cy="startQuizzButton" *ngIf="record.rootEntity.cardsCollection.length>0" routerLink="quiz-form/{{record.rootEntity.name}}">Lancer le Quiz</button> -->
             </td>
         </tr>
     </tbody>

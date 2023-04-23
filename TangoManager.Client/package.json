@@ -27,6 +27,7 @@
     "jquery": "^3.6.4",
     "json-schema-to-typescript": "^12.0.0",
     "moment": "^2.29.4",
+    "ngx-cookie-service": "^15.0.0",
     "npm": "^9.6.3",
     "rxjs": "~7.8.0",
     "save": "^2.9.0",

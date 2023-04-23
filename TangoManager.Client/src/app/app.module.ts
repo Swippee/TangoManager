@@ -10,7 +10,7 @@ import { Routes,RouterModule } from '@angular/router';
 import { CardFormComponent } from './card-form/card-form.component';
 import { CardListComponent } from './card-list/card-list.component';
 import { QuizFormComponent } from './quiz-form/quiz-form.component';
-
+import { CookieService } from 'ngx-cookie-service';
 export const appRootList:Routes = [
   {path:'',component:PaquetListComponent},
   {path:'paquet-list',component:PaquetListComponent},
@@ -39,7 +39,7 @@ export const appRootList:Routes = [
   exports:[
     RouterModule
   ],
-  providers: [],
+  providers: [CookieService],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

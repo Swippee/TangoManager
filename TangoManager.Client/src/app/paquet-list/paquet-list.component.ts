@@ -3,7 +3,9 @@ import { PaquetService } from '../paquet.service';
 import { PaquetRecord } from '../models/PaquetRecord';
 import * as moment  from 'node_modules/moment/moment.js';
 import { Router } from '@angular/router';
-import { map } from 'rxjs';
+import { Observable, map } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-paquet-list',
@@ -17,7 +19,8 @@ export class PaquetListComponent  {
   canDisplayData=false;
 constructor(
   private paquetService: PaquetService,
-  private router: Router 
+  private router: Router,
+  private cookie: CookieService 
   ){}
 ngOnInit():void {
    
@@ -29,6 +32,7 @@ ngOnInit():void {
     var date = moment();
       this.paquetService.getPaquetRecords().subscribe((data) => {
       this.canDisplayData = true;
+      console.log(data);
       this.records = data as PaquetRecord[];
 
       this.records.forEach(record => {
@@ -37,18 +41,6 @@ ngOnInit():void {
       });
     })
   }
-  // TestMappingRecords() {
-  //   var date = moment();
-  //     this.paquetService.getPaquetRecords().subscribe((data) => {
-  //       this.tests=data?map(
-  //         result => {
-  //           return {
-  //             packet:result.rootEntity
-  //           }
-  //         }
-  //       )
-  //   });
-  //}
   goToCreatePaquet(){
     this.router.navigate(['/','paquet-form']);
   }
@@ -63,6 +55,19 @@ ngOnInit():void {
   }
   redirectToCreateCard(packetEntity: PaquetRecord){
     this.router.navigateByUrl('/card-form/'+packetEntity);
+  }
+
+  redirectToStartQuiz(packetName: String){
+    this.paquetService.addPacketLock(packetName).subscribe((res)=>{
+      let tokenValue= res as {token:string}
+      this.cookie.set('TOKENUSER_VALUE',tokenValue.token)
+      this.router.navigateByUrl('/quiz-form/'+packetName);
+      },
+      (error: HttpErrorResponse)=>{
+        alert(error.error.messageShort);
+      }
+    )
+    
   }
 }
 
