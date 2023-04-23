@@ -6,9 +6,11 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TangoManagerAPI.Application\TangoManagerAPI.Application.csproj" />
     <ProjectReference Include="..\TangoManagerAPI.Entities\TangoManagerAPI.Entities.csproj" />
   </ItemGroup>
 

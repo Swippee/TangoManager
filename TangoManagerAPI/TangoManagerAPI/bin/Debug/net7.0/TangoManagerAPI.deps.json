@@ -14,6 +14,7 @@
           "Microsoft.NETFramework.ReferenceAssemblies": "1.0.3",
           "Swashbuckle.AspNetCore": "6.5.0",
           "System.Data.SqlClient": "4.8.5",
+          "TangoManagerAPI.Application": "1.0.0",
           "TangoManagerAPI.Entities": "1.0.0",
           "TangoManagerAPI.Infrastructures": "1.0.0"
         },
@@ -179,6 +180,11 @@
         }
       },
       "Microsoft.Extensions.ApiDescription.Server/6.0.5": {},
+      "Microsoft.Extensions.Caching.Abstractions/7.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Primitives": "7.0.0"
+        }
+      },
       "Microsoft.Extensions.Configuration.Abstractions/7.0.0": {
         "dependencies": {
           "Microsoft.Extensions.Primitives": "7.0.0"
@@ -1368,6 +1374,14 @@
           "System.Xml.ReaderWriter": "4.3.0"
         }
       },
+      "TangoManagerAPI.Application/1.0.0": {
+        "dependencies": {
+          "TangoManagerAPI.Entities": "1.0.0"
+        },
+        "runtime": {
+          "TangoManagerAPI.Application.dll": {}
+        }
+      },
       "TangoManagerAPI.Entities/1.0.0": {
         "dependencies": {
           "Dapper": "2.0.123",
@@ -1382,6 +1396,8 @@
       "TangoManagerAPI.Infrastructures/1.0.0": {
         "dependencies": {
           "Microsoft.Data.SqlClient": "5.1.0",
+          "Microsoft.Extensions.Caching.Abstractions": "7.0.0",
+          "TangoManagerAPI.Application": "1.0.0",
           "TangoManagerAPI.Entities": "1.0.0"
         },
         "runtime": {
@@ -1479,6 +1495,13 @@
       "sha512": "sha512-Ckb5EDBUNJdFWyajfXzUIMRkhf52fHZOQuuZg/oiu8y7zDCVwD0iHhew6MnThjHmevanpxL3f5ci2TtHQEN6bw==",
       "path": "microsoft.extensions.apidescription.server/6.0.5",
       "hashPath": "microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Caching.Abstractions/7.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-IeimUd0TNbhB4ded3AbgBLQv2SnsiVugDyGV1MvspQFVlA07nDC7Zul7kcwH5jWN3JiTcp/ySE83AIJo8yfKjg==",
+      "path": "microsoft.extensions.caching.abstractions/7.0.0",
+      "hashPath": "microsoft.extensions.caching.abstractions.7.0.0.nupkg.sha512"
     },
     "Microsoft.Extensions.Configuration.Abstractions/7.0.0": {
       "type": "package",
@@ -2368,6 +2391,11 @@
       "sha512": "sha512-lJ8AxvkX7GQxpC6GFCeBj8ThYVyQczx2+f/cWHJU8tjS7YfI6Cv6bon70jVEgs2CiFbmmM8b9j1oZVx0dSI2Ww==",
       "path": "system.xml.xmldocument/4.3.0",
       "hashPath": "system.xml.xmldocument.4.3.0.nupkg.sha512"
+    },
+    "TangoManagerAPI.Application/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     },
     "TangoManagerAPI.Entities/1.0.0": {
       "type": "project",

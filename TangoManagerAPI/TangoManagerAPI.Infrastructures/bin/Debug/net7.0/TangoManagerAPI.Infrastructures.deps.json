@@ -9,6 +9,8 @@
       "TangoManagerAPI.Infrastructures/1.0.0": {
         "dependencies": {
           "Microsoft.Data.SqlClient": "5.1.0",
+          "Microsoft.Extensions.Caching.Abstractions": "7.0.0",
+          "TangoManagerAPI.Application": "1.0.0",
           "TangoManagerAPI.Entities": "1.0.0"
         },
         "runtime": {
@@ -135,6 +137,17 @@
           "lib/net6.0/Microsoft.Data.Sqlite.dll": {
             "assemblyVersion": "7.0.3.0",
             "fileVersion": "7.0.323.6302"
+          }
+        }
+      },
+      "Microsoft.Extensions.Caching.Abstractions/7.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Primitives": "7.0.0"
+        },
+        "runtime": {
+          "lib/net7.0/Microsoft.Extensions.Caching.Abstractions.dll": {
+            "assemblyVersion": "7.0.0.0",
+            "fileVersion": "7.0.22.51805"
           }
         }
       },
@@ -454,6 +467,14 @@
           }
         }
       },
+      "TangoManagerAPI.Application/1.0.0": {
+        "dependencies": {
+          "TangoManagerAPI.Entities": "1.0.0"
+        },
+        "runtime": {
+          "TangoManagerAPI.Application.dll": {}
+        }
+      },
       "TangoManagerAPI.Entities/1.0.0": {
         "dependencies": {
           "Dapper": "2.0.123",
@@ -528,6 +549,13 @@
       "sha512": "sha512-pCmzLLWTIrIv94o7JtQ1qcPD0oc1YNY9XvlO6/tOF9YCcUfDZ3Tx9Z//CM7hFnprduHFPekif7jteBc/sXQ31Q==",
       "path": "microsoft.data.sqlite.core/7.0.3",
       "hashPath": "microsoft.data.sqlite.core.7.0.3.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Caching.Abstractions/7.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-IeimUd0TNbhB4ded3AbgBLQv2SnsiVugDyGV1MvspQFVlA07nDC7Zul7kcwH5jWN3JiTcp/ySE83AIJo8yfKjg==",
+      "path": "microsoft.extensions.caching.abstractions/7.0.0",
+      "hashPath": "microsoft.extensions.caching.abstractions.7.0.0.nupkg.sha512"
     },
     "Microsoft.Extensions.Configuration.Abstractions/7.0.0": {
       "type": "package",
@@ -787,6 +815,11 @@
       "sha512": "sha512-IXoJOXIqc39AIe+CIR7koBtRGMiCt/LPM3lI+PELtDIy9XdyeSrwXFdWV9dzJ2Awl0paLWUaknLxFQ5HpHZUog==",
       "path": "system.windows.extensions/6.0.0",
       "hashPath": "system.windows.extensions.6.0.0.nupkg.sha512"
+    },
+    "TangoManagerAPI.Application/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     },
     "TangoManagerAPI.Entities/1.0.0": {
       "type": "project",

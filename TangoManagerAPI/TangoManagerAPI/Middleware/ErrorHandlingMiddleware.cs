@@ -3,7 +3,7 @@ using TangoManagerAPI.Entities.Exceptions;
 
 namespace TangoManagerAPI.Middleware
 {
-    public class ErrorHandlingMiddleware : IMiddleware 
+    public class ErrorHandlingMiddleware : IMiddleware
     {
 
 
@@ -40,14 +40,24 @@ namespace TangoManagerAPI.Middleware
                     case QuizInvalidStateException ex:
                         httpStatusCode = HttpStatusCode.BadRequest;
                         break;
+                    case InvalidPacketTokenHeaderException ex:
+                        httpStatusCode = HttpStatusCode.BadRequest;
+                        break;
+                    case InvalidPacketTokenException ex:
+                        httpStatusCode = HttpStatusCode.Unauthorized;
+                        break;
                     default:
-                        httpStatusCode = HttpStatusCode.InternalServerError; 
+                        httpStatusCode = HttpStatusCode.InternalServerError;
                         break;
 
                 }
-                
+
                 context.Response.StatusCode = (int)httpStatusCode;
-                await context.Response.WriteAsJsonAsync(new {messageFull=exception.ToString(),messageShort=exception.Message} );
+                await context.Response.WriteAsJsonAsync(new
+                {
+                    messageFull = exception.ToString(),
+                    messageShort = exception.Message
+                });
                 await context.Response.CompleteAsync();
             }
         }

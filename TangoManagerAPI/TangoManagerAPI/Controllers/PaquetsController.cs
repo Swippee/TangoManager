@@ -1,5 +1,7 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
+using TangoManagerAPI.ActionFilters;
+using TangoManagerAPI.Application.Commands.CommandsAuth;
 using TangoManagerAPI.DTO;
 using TangoManagerAPI.Entities.Commands.CommandsPaquet;
 using TangoManagerAPI.Entities.Models;
@@ -49,6 +51,7 @@ namespace TangoManagerAPI.Controllers
 
         [HttpDelete]
         [Route("{name}")]
+        [PacketActionFilter("name")]
         public async Task<ActionResult> DeleteAsync([FromRoute] string name)
         {
             var cmd = new DeletePaquetCommand(name);
@@ -59,12 +62,34 @@ namespace TangoManagerAPI.Controllers
 
         [HttpPut]
         [Route("{packetName}")]
+        [PacketActionFilter("packetName")]
         public async Task<ActionResult> AddCardAsync([FromRoute] string packetName, [FromBody] AddCardToPacketRequest addCardToPacketRequest)
         {
             var cmd = new AddCardToPacketCommand(packetName, addCardToPacketRequest.Question, addCardToPacketRequest.Answer, addCardToPacketRequest.Score);
             var packetAggregate = await cmd.ExecuteAsync(_commandRouter);
 
             return StatusCode((int)HttpStatusCode.OK, packetAggregate.RootEntity);
+        }
+
+
+        [HttpPost]
+        [Route("packetLock/{packetName}")]
+        public async Task<ActionResult> CreatePacketLockAsync([FromRoute] string packetName)
+        {
+            var cmd = new LockPacketCommand(packetName);
+            var lockPacketEntity = await cmd.ExecuteAsync(_commandRouter);
+
+            return StatusCode((int)HttpStatusCode.Created, lockPacketEntity);
+        }
+
+        [HttpDelete]
+        [Route("packetLock/{packetName}")]
+        public async Task<ActionResult> DeletePacketLockAsync([FromRoute] string packetName, [FromBody] DeletePacketLockRequest deletePacketLockRequest)
+        {
+            var cmd = new UnlockPacketCommand(packetName, deletePacketLockRequest.PacketToken);
+            await cmd.ExecuteAsync(_commandRouter);
+
+            return StatusCode((int)HttpStatusCode.OK);
         }
     }
 }

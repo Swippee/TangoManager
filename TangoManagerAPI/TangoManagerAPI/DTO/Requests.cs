@@ -24,3 +24,8 @@ public class CreatePacketRequest
     public string Description { get; set; }
 
 }
+
+public class DeletePacketLockRequest
+{
+    public string PacketToken { get; set; }
+}

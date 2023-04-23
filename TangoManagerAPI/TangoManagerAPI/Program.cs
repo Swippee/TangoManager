@@ -1,7 +1,8 @@
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text.Json.Serialization;
+using TangoManagerAPI.Application.Commands.CommandsAuth;
+using TangoManagerAPI.Application.Queries.CommandsAuth;
 using TangoManagerAPI.Entities.Commands.CommandsPaquet;
 using TangoManagerAPI.Entities.Commands.CommandsQuiz;
 using TangoManagerAPI.Entities.Events;
@@ -41,7 +42,8 @@ builder.Services.AddSingleton<IQueryRouter>(p => {
 
     var handler = p.GetRequiredService<QueryHandler>();
 
-    queryRouter.AddQueryHandler<GetAllPaquetsQuery>(handler);   
+    queryRouter.AddQueryHandler<GetAllPaquetsQuery>(handler);
+    queryRouter.AddQueryHandler<GetPacketLockQuery>(handler);
 
     return queryRouter;
 });
@@ -56,6 +58,8 @@ builder.Services.AddSingleton<ICommandRouter>(p => {
     commandRouter.AddCommandHandler<CreateQuizCommand>(handler);
     commandRouter.AddCommandHandler<AnswerQuizCommand>(handler);
     commandRouter.AddCommandHandler<AddCardToPacketCommand>(handler);
+    commandRouter.AddCommandHandler<LockPacketCommand>(handler);
+    commandRouter.AddCommandHandler<UnlockPacketCommand>(handler);
 
     return commandRouter;
 });
@@ -84,6 +88,11 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
+
+builder.Services.AddMemoryCache(options =>
+{
+    options.ExpirationScanFrequency = TimeSpan.FromMinutes(1);
+});
 
 var app = builder.Build();
 var swaggerOptions = app.Services.GetRequiredService<IOptions<SwaggerGenOptions>>();

@@ -1,5 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
+using TangoManagerAPI.Application.Commands.CommandsAuth;
 using TangoManagerAPI.Entities.Commands.CommandsPaquet;
 using TangoManagerAPI.Entities.Commands.CommandsQuiz;
 using TangoManagerAPI.Entities.Exceptions;
@@ -15,23 +18,26 @@ namespace TangoManagerAPI.Infrastructures.Handlers
         ICommandHandler<Task, DeletePaquetCommand>,
         ICommandHandler<QuizAggregate, AnswerQuizCommand>,
         ICommandHandler<QuizAggregate, CreateQuizCommand>,
-        ICommandHandler<PacketAggregate, AddCardToPacketCommand>
+        ICommandHandler<PacketAggregate, AddCardToPacketCommand>,
+        ICommandHandler<PacketLockEntity, LockPacketCommand>,
+        ICommandHandler<Task, UnlockPacketCommand>
     {
-        private readonly IPaquetRepository _paquetRepository;
+        private readonly IPaquetRepository _packetRepository;
         private readonly IEventRouter _eventRouter;
         private readonly IQuizRepository _quizRepository;
+        private readonly IMemoryCache _memoryCache;
 
-
-        public CommandHandler(IPaquetRepository paquetRepository, IEventRouter eventRouter, IQuizRepository quizRepository)
+        public CommandHandler(IPaquetRepository packetRepository, IEventRouter eventRouter, IQuizRepository quizRepository, IMemoryCache memoryCache)
         {
-            _paquetRepository = paquetRepository;
+            _packetRepository = packetRepository;
             _eventRouter = eventRouter;
             _quizRepository = quizRepository;
+            _memoryCache = memoryCache;
         }
 
         public async Task<PacketAggregate> HandleAsync(CreatePaquetCommand command)
         {
-            var packetAggregate = await _paquetRepository.GetPacketByNameAsync(command.Name);
+            var packetAggregate = await _packetRepository.GetPacketByNameAsync(command.Name);
 
             if (packetAggregate != null)
                 throw new EntityAlreadyExistsException($"Packet with name {packetAggregate.RootEntity.Name} already exists in base");
@@ -40,7 +46,7 @@ namespace TangoManagerAPI.Infrastructures.Handlers
 
             packetAggregate = new PacketAggregate(packetEntity);
 
-            await _paquetRepository.SavePacketAsync(packetAggregate);
+            await _packetRepository.SavePacketAsync(packetAggregate);
 
             return packetAggregate;
         }
@@ -63,7 +69,7 @@ namespace TangoManagerAPI.Infrastructures.Handlers
 
         public async Task<QuizAggregate> HandleAsync(CreateQuizCommand command)
         {
-            var packetAggregate = await _paquetRepository.GetPacketByNameAsync(command.PacketName);
+            var packetAggregate = await _packetRepository.GetPacketByNameAsync(command.PacketName);
 
             if (packetAggregate == null) 
                 throw new EntityDoesNotExistException($"Packet with name {command.PacketName} does not exist, cannot create a Quiz.");
@@ -86,7 +92,7 @@ namespace TangoManagerAPI.Infrastructures.Handlers
 
         public async Task<PacketAggregate> HandleAsync(AddCardToPacketCommand command)
         {
-            var packetAggregate = await _paquetRepository.GetPacketByNameAsync(command.PacketName);
+            var packetAggregate = await _packetRepository.GetPacketByNameAsync(command.PacketName);
 
             if (packetAggregate == null)
                 throw new EntityDoesNotExistException($"Packet with name {command.PacketName} does not exist, cannot add card to Packet.");
@@ -95,7 +101,7 @@ namespace TangoManagerAPI.Infrastructures.Handlers
 
             var events = packetAggregate.AddCard(card);
 
-            await _paquetRepository.SavePacketAsync(packetAggregate);
+            await _packetRepository.SavePacketAsync(packetAggregate);
 
             foreach (var @event in events)
             {
@@ -107,12 +113,35 @@ namespace TangoManagerAPI.Infrastructures.Handlers
 
         public async Task<Task> HandleAsync(DeletePaquetCommand command)
         {
-            var packetAggregate = await _paquetRepository.GetPacketByNameAsync(command.Name);
+            var packetAggregate = await _packetRepository.GetPacketByNameAsync(command.Name);
 
             if (packetAggregate == null)
                 throw new EntityDoesNotExistException($"Packet with name {command.Name} does not exist, cannot delete Packet.");
 
-            await _paquetRepository.DeletePacketAsync(packetAggregate);
+            await _packetRepository.DeletePacketAsync(packetAggregate);
+            return Task.CompletedTask;
+        }
+
+        public async Task<PacketLockEntity> HandleAsync(LockPacketCommand command)
+        {
+            var packetLockEntity = new PacketLockEntity(command.PacketName, Guid.NewGuid().ToString());
+
+            //TODO 
+            //implement repository
+
+            return _memoryCache.Set(command.PacketName, packetLockEntity, new MemoryCacheEntryOptions
+            {
+                SlidingExpiration = PacketLockEntity.CacheExpiration
+            });
+        }
+
+        public async Task<Task> HandleAsync(UnlockPacketCommand command)
+        {
+            //TODO 
+            //implement repository
+
+            _memoryCache.Remove(command.PacketName);
+
             return Task.CompletedTask;
         }
     }

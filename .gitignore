@@ -426,3 +426,4 @@ Version.cpp
 /TangoManager.Client/.vscode/launch.json
 /TangoManagerAPI/TangoManagerAPI/bin/Debug/net7.0/TangoManagerAPI.deps.json
 /TangoManagerAPI/TangoManagerAPI/bin/Debug/net7.0/TangoManagerAPI.runtimeconfig.json
+/TangoManagerAPI/TangoManagerAPI.Infrastructures/bin/Debug/net7.0/TangoManagerAPI.Infrastructures.deps.json

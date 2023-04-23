@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E38D72CF
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TangoManagerAPI.Entities.Tests", "TangoManagerAPI.Entities.Tests\TangoManagerAPI.Entities.Tests.csproj", "{EADCACE9-09AD-4C29-8DCC-B560A55CD825}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TangoManagerAPI.Application", "TangoManagerAPI.Application\TangoManagerAPI.Application.csproj", "{B56BE836-B855-42D0-83C2-FA9AAC0C547B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{EADCACE9-09AD-4C29-8DCC-B560A55CD825}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EADCACE9-09AD-4C29-8DCC-B560A55CD825}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EADCACE9-09AD-4C29-8DCC-B560A55CD825}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B56BE836-B855-42D0-83C2-FA9AAC0C547B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B56BE836-B855-42D0-83C2-FA9AAC0C547B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B56BE836-B855-42D0-83C2-FA9AAC0C547B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B56BE836-B855-42D0-83C2-FA9AAC0C547B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

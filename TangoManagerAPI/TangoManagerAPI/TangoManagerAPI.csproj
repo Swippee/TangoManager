@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TangoManagerAPI.Application\TangoManagerAPI.Application.csproj" />
     <ProjectReference Include="..\TangoManagerAPI.Entities\TangoManagerAPI.Entities.csproj" />
     <ProjectReference Include="..\TangoManagerAPI.Infrastructures\TangoManagerAPI.Infrastructures.csproj" />
   </ItemGroup>
