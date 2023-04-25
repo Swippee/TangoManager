@@ -27,7 +27,7 @@ builder.Services.AddCors(opt => opt.AddPolicy("CorsPolicy", policy =>
 }));
 builder.Services.AddSingleton<IPaquetRepository,PaquetRepository>();
 builder.Services.AddSingleton<IQuizRepository,QuizRepository>();
-//builder.Services.AddSingleton<ICartesRepository>();
+builder.Services.AddSingleton<IPacketLockRepository,PacketLockRepository>();
 
 
 builder.Services.AddSingleton<QueryHandler>();

@@ -26,13 +26,15 @@ namespace TangoManagerAPI.Infrastructures.Handlers
         private readonly IEventRouter _eventRouter;
         private readonly IQuizRepository _quizRepository;
         private readonly IMemoryCache _memoryCache;
+        private readonly IPacketLockRepository _packetLockRepository;
 
-        public CommandHandler(IPaquetRepository packetRepository, IEventRouter eventRouter, IQuizRepository quizRepository, IMemoryCache memoryCache)
+        public CommandHandler(IPaquetRepository packetRepository, IEventRouter eventRouter, IQuizRepository quizRepository, IMemoryCache memoryCache, IPacketLockRepository packetLockRepository)
         {
             _packetRepository = packetRepository;
             _eventRouter = eventRouter;
             _quizRepository = quizRepository;
             _memoryCache = memoryCache;
+            _packetLockRepository= packetLockRepository;
         }
 
         public async Task<PacketAggregate> HandleAsync(CreatePaquetCommand command)
@@ -128,7 +130,7 @@ namespace TangoManagerAPI.Infrastructures.Handlers
 
             //TODO 
             //implement repository
-
+             await _packetLockRepository.CreatePacketLockAsync(packetLockEntity);
             return _memoryCache.Set(command.PacketName, packetLockEntity, new MemoryCacheEntryOptions
             {
                 SlidingExpiration = PacketLockEntity.CacheExpiration

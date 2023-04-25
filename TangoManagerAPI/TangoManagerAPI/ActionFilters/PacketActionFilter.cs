@@ -33,7 +33,7 @@ namespace TangoManagerAPI.ActionFilters
 
             var packetLockEntity = await new GetPacketLockQuery(packetName!.ToString()!).QueryAsync(_queryRouter);
 
-            if (packetLockEntity == null)
+            if (packetLockEntity == null || packetLockEntity.IsExpired)
             {
                 await next();
                 return;
