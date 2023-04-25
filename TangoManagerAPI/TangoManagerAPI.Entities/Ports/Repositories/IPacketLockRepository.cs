@@ -9,5 +9,7 @@ public interface IPacketLockRepository
 {
 
     Task CreatePacketLockAsync(PacketLockEntity packetLockAggregate);
-    Task DeletePacketLockAsync(PacketLockEntity packetLockAggregate);
+    Task DeletePacketLockAsync(string packetName);
+    Task UpdatePacketLockAsync(PacketLockEntity packetLockAggregate);
+    Task<PacketLockEntity> GetAsync(string packetName);
 }

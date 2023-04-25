@@ -2,6 +2,7 @@
 using TangoManagerAPI.Entities.Events.PacketLockEntityEvents;
 using TangoManagerAPI.Entities.Events.QuizAggregateEvents;
 using TangoManagerAPI.Entities.Ports.Handlers;
+using TangoManagerAPI.Entities.Ports.Repositories;
 
 namespace TangoManagerAPI.Infrastructures.Handlers
 {
@@ -12,10 +13,10 @@ namespace TangoManagerAPI.Infrastructures.Handlers
         IEventHandler<CardUpdatedEvent>,
         IEventHandler<PacketLockAccessedEvent>
     {
-
-        public EventsHandler()
+        private readonly IPacketLockRepository _packetLockRepository;
+        public EventsHandler(IPacketLockRepository packetLockRepository)
         {
-
+            _packetLockRepository = packetLockRepository;
         }
 
         public async void Handle(QuizAnsweredEvent @event)
@@ -43,6 +44,7 @@ namespace TangoManagerAPI.Infrastructures.Handlers
             //TODO
             //implement repository
             //make update @event.Data.LastAccessedDateTime
+            await _packetLockRepository.UpdatePacketLockAsync(@event.Data);
         }
     }
 }

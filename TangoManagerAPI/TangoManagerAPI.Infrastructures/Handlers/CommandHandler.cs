@@ -128,8 +128,6 @@ namespace TangoManagerAPI.Infrastructures.Handlers
         {
             var packetLockEntity = new PacketLockEntity(command.PacketName, Guid.NewGuid().ToString());
 
-            //TODO 
-            //implement repository
              await _packetLockRepository.CreatePacketLockAsync(packetLockEntity);
             return _memoryCache.Set(command.PacketName, packetLockEntity, new MemoryCacheEntryOptions
             {
@@ -139,8 +137,7 @@ namespace TangoManagerAPI.Infrastructures.Handlers
 
         public async Task<Task> HandleAsync(UnlockPacketCommand command)
         {
-            //TODO 
-            //implement repository
+            await _packetLockRepository.DeletePacketLockAsync(command.PacketName);
 
             _memoryCache.Remove(command.PacketName);
 

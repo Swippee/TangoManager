@@ -8,7 +8,8 @@ namespace TangoManagerAPI.Entities.Models
     {
         public static TimeSpan CacheExpiration => TimeSpan.FromMinutes(10);
         private static TimeSpan AccessTimeout => TimeSpan.FromMinutes(20);
- 
+        public PacketLockEntity() { }
+   
         public PacketLockEntity(string packetName, string lockToken)
         {
             PacketName = packetName;

@@ -20,7 +20,21 @@ namespace TangoManagerAPI.Infrastructures.Repositories
         {
             _config = config;
         }
+        public async Task<PacketLockEntity> GetAsync(string packetName)
+        {
 
+            await using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
+
+            await connection.OpenAsync();
+
+            const string packetLockQuery = "select * from PacketLock WHERE PacketName=@PacketName";
+            var packetLockEntity = await connection.QueryFirstOrDefaultAsync<PacketLockEntity>(packetLockQuery, new { PacketName = packetName });
+
+            if (packetLockEntity == null)
+                return null;
+
+            return packetLockEntity;
+        }
         public async Task CreatePacketLockAsync(PacketLockEntity packetLockEntity)
         {
 
@@ -65,10 +79,62 @@ namespace TangoManagerAPI.Infrastructures.Repositories
             }
 
         }
-
-        public Task DeletePacketLockAsync(PacketLockEntity packetLockAggregate)
+        public async Task DeletePacketLockAsync(string packetName)
         {
-            throw new NotImplementedException();
+            await using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
+            await connection.OpenAsync();
+            await using var sqlTran = (SqlTransaction)await connection.BeginTransactionAsync(IsolationLevel.Serializable);
+            const string query = @"
+              BEGIN 
+                        DELETE FROM PacketLock WITH (ROWLOCK,UPDLOCK)  WHERE PacketName=@PacketName
+              END";
+
+            await using var packetUnlockCmd = new SqlCommand(query, connection, sqlTran);
+            packetUnlockCmd.Parameters.AddWithValue("@PacketName", packetName);
+
+            try
+            {
+                await packetUnlockCmd.ExecuteNonQueryAsync();
+                sqlTran.Commit();
+            }
+            catch (Exception ex)
+            {
+                await Console.Error.WriteLineAsync(ex.ToString());
+                sqlTran.Rollback();
+                throw;
+            }
+        }
+
+        public async Task UpdatePacketLockAsync(PacketLockEntity packetLockEntity)
+        {
+            await using var connection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
+            await connection.OpenAsync();
+            await using var sqlTran = (SqlTransaction)await connection.BeginTransactionAsync(IsolationLevel.Serializable);
+            const string query = @"
+              BEGIN 
+
+                Update PacketLock WITH (ROWLOCK,UPDLOCK) 
+                SET LastAccessedDateTime = @LastAccessedDateTime
+                WHERE PacketName=@PacketName
+ 
+              END";
+
+            await using var packetLockCmd = new SqlCommand(query, connection, sqlTran);
+            packetLockCmd.Parameters.AddWithValue("@PacketName", packetLockEntity.PacketName);
+            packetLockCmd.Parameters.AddWithValue("@LastAccessedDateTime", packetLockEntity.LastAccessedDateTime);
+
+            try
+            {
+                await packetLockCmd.ExecuteNonQueryAsync();
+                sqlTran.Commit();
+            }
+            catch (Exception ex)
+            {
+              
+                await Console.Error.WriteLineAsync(ex.ToString());
+                sqlTran.Rollback();
+                throw;
+            }
         }
     }
 

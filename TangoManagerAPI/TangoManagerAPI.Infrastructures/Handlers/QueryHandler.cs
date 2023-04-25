@@ -8,6 +8,7 @@ using TangoManagerAPI.Entities.Models;
 using TangoManagerAPI.Entities.Ports.Handler;
 using TangoManagerAPI.Entities.Ports.Repositories;
 using TangoManagerAPI.Entities.Queries;
+using TangoManagerAPI.Infrastructures.Repositories;
 
 namespace TangoManagerAPI.Infrastructures.Handlers
 {
@@ -17,12 +18,14 @@ namespace TangoManagerAPI.Infrastructures.Handlers
 
     {
         private readonly IPaquetRepository _packetRepository;
+        private readonly IPacketLockRepository _packetLockRepository;
         private readonly IMemoryCache _memoryCache;
 
-        public QueryHandler(IPaquetRepository packetRepository, IMemoryCache memoryCache)
+        public QueryHandler(IPaquetRepository packetRepository, IMemoryCache memoryCache, IPacketLockRepository packetLockRepository)
         {
             _packetRepository = packetRepository;
             _memoryCache = memoryCache;
+            _packetLockRepository = packetLockRepository;
         }
 
         public async Task<IEnumerable<PacketAggregate>> HandleAsync(GetAllPaquetsQuery query, CancellationToken token = default)
@@ -42,9 +45,7 @@ namespace TangoManagerAPI.Infrastructures.Handlers
             }
 
             //TODO
-            //Look into repository
-            //implement packet repository
-            //packetLockEntity = _packetLockRepository.GetAsync();
+             packetLockEntity = await _packetLockRepository.GetAsync(query.PacketName);
 
             if (packetLockEntity == null) 
                 return null;
